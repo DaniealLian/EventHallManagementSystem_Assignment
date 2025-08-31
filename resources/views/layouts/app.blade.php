@@ -17,8 +17,8 @@
             <div class="navbar-nav ms-auto">
                 @auth
                     <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
-                    <a class="nav-link" href="{{ route('halls.index') }}">Event Halls</a>
-                    <a class="nav-link" href="{{ route('bookings.index') }}">My Bookings</a>
+                    <a class="nav-link" href="TODO">Event Halls</a>
+                    <a class="nav-link" href="TODO">My Bookings</a>
                     <div class="dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             {{ auth()->user()->name }}
@@ -27,7 +27,7 @@
                             <li><a class="dropdown-item" href="{{ route('profile') }}">Profile</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                <form action="{{ route('logout') }}" method="GET" class="d-inline">
                                     @csrf
                                     <button class="dropdown-item" type="submit">Logout</button>
                                 </form>

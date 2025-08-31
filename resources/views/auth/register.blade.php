@@ -32,10 +32,10 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="phone" class="form-label">Phone</label>
-                        <input type="text" class="form-control @error('phone') is-invalid @enderror" 
-                               id="phone" name="phone" value="{{ old('phone') }}">
-                        @error('phone')
+                        <label for="phone_number" class="form-label">Phone</label>
+                        <input type="text" class="form-control @error('phone_number') is-invalid @enderror" 
+                               id="phone_number" name="phone_number" value="{{ old('phone_number') }}">
+                        @error('phone_number')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>

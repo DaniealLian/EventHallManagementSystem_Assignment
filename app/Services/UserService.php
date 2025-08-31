@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Contracts\userFactoryInterface;
+use App\Contracts\UserFactoryInterface;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -10,7 +10,7 @@ class UserService
 {
     protected $userFactory;
 
-    public function _construct(UserFactoryInterface $userFactory)
+    public function __construct(UserFactoryInterface $userFactory)
     {
         $this->userFactory = $userFactory;
     }

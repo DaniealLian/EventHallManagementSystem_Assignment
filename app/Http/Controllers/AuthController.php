@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Services\UserSService;
+use App\Services\UserService;
 use Illuminate\Support\Facades\Validator;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -14,7 +17,7 @@ class AuthController extends Controller
 
     protected $userService;
 
-    public function _construct(userService $userService){
+    public function __construct(UserService $userService){
         $this->userService = $userService;
     }
 
@@ -29,36 +32,19 @@ class AuthController extends Controller
         // debug code
         // dd($request->all());
 
-        $request -> validate([
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'password_confirmation' => 'required|string|min:8|confirmed',
             'phone_number' => 'required|string|max:20|regex:/^([0-9\s\-\+\(\)]*)$/',
         ]);
 
-        if ($validator->fails()){
-            return back()->withErrors($validator)->withInput();
-        }
+        $validatedData['role'] = 'customer';
 
-        // $data =$request->all();
-        // $data['role']='customer';
-
-        // $user = $this->userService->register($data);
-
-        // return redirect()->route('login')->with('success', 'Registration successful! Please login.');
-                $user = User::create([
-            'user_code' => $this->generateUserCode(), // Changed from 'id' to 'user_code'
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'address' => $request->address,
-            'phone_number' => $request->phone_number,
-        ]);
+        $user = $this->userService->register($validatedData);
 
         Auth::login($user);
-
-        return redirect()->intended('dashboard')->with('success', 'Registration successful!');
+        return redirect()->intended('dashboard')->with('success', 'Registration successful! Please login.');
     }
 
     //USER LOGIN FUNCTIONS
@@ -91,8 +77,9 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $this->userService->logout();
-        $request->session()->logout();
+        // $this->userService->logout();
+        Auth::logout();
+        $request->session()->invalidate();
         $request->session()->regenerateToken();
 
         return redirect('/');

@@ -33,10 +33,10 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="phone" class="form-label">Phone</label>
-                        <input type="text" class="form-control @error('phone') is-invalid @enderror" 
-                               id="phone" name="phone" value="{{ old('phone', $user->phone) }}">
-                        @error('phone')
+                        <label for="phone_number" class="form-label">Phone</label>
+                        <input type="text" class="form-control @error('phone_number') is-invalid @enderror" 
+                               id="phone_number" name="phonphone_numbere" value="{{ old('phone_number', $user->phone_number) }}">
+                        @error('phone_number')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -73,7 +73,7 @@
             </div>
             <div class="card-body">
                 <p><strong>Role:</strong> 
-                    <span class="badge bg-{{ $user->isAdmin() ? 'danger' : ($user->isManager() ? 'success' : 'primary') }}">
+                    <span class="badge bg-{{ $user->isManager() ? 'success' : 'primary' }}">
                         {{ ucfirst($user->role) }}
                     </span>
                 </p>
@@ -106,21 +106,7 @@
             </div>
         </div>
 
-        @if($user->isAdmin())
-        <div class="card mt-3">
-            <div class="card-header">
-                <h5><i class="fas fa-cog"></i> Admin Tools</h5>
-            </div>
-            <div class="card-body">
-                <a href="{{ route('admin.manager-applications') }}" class="btn btn-outline-primary btn-sm d-block mb-2">
-                    <i class="fas fa-clipboard-list"></i> Review Manager Applications
-                </a>
-                <a href="{{ route('halls.create') }}" class="btn btn-outline-success btn-sm d-block">
-                    <i class="fas fa-plus"></i> Add New Hall
-                </a>
-            </div>
-        </div>
-        @endif
+
     </div>
 </div>
 @endsection

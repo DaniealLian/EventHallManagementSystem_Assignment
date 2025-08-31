@@ -17,13 +17,13 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h5 class="card-title">Event Halls</h5>
-                        <h2>{{ App\Models\EventHall::count() }}</h2>
+                        <h2>TODO</h2>
                     </div>
                     <div class="align-self-center">
                         <i class="fas fa-building fa-3x"></i>
                     </div>
                 </div>
-                <a href="{{ route('halls.index') }}" class="btn btn-light btn-sm mt-2">View All</a>
+                <a href="TODO" class="btn btn-light btn-sm mt-2">View All</a>
             </div>
         </div>
     </div>
@@ -34,36 +34,36 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h5 class="card-title">My Bookings</h5>
-                        <h2>{{ auth()->user()->bookings()->count() }}</h2>
+                        <h2>TODO</h2>
                     </div>
                     <div class="align-self-center">
                         <i class="fas fa-calendar-check fa-3x"></i>
                     </div>
                 </div>
-                <a href="{{ route('bookings.index') }}" class="btn btn-light btn-sm mt-2">View All</a>
+                <a href="TODO" class="btn btn-light btn-sm mt-2">View All</a>
             </div>
         </div>
     </div>
     
     <div class="col-md-4">
-        <div class="card text-white bg-info">
+    <div class="card text-white bg-info">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
                         <h5 class="card-title">Available Halls</h5>
-                        <h2>{{ App\Models\EventHall::where('status', 'available')->count() }}</h2>
+                        <h2>TODO</h2>
                     </div>
                     <div class="align-self-center">
                         <i class="fas fa-check-circle fa-3x"></i>
                     </div>
                 </div>
-                <a href="{{ route('halls.index') }}" class="btn btn-light btn-sm mt-2">Book Now</a>
+                <a href="TODO" class="btn btn-light btn-sm mt-2">Book Now</a>
             </div>
         </div>
     </div>
 </div>
 
-@if(auth()->user()->isManager() || auth()->user()->isAdmin())
+@if(auth()->user()->isManager())
 <div class="row mt-4">
     <div class="col-12">
         <h3>Management Tools</h3>
