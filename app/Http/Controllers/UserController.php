@@ -27,14 +27,14 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,'.auth()->id(),
             'password' => 'nullable|string|min:8|confirmed',
-            'phone_number' => 'nullable|string|max:20|regex:/^([0-9\s\-\+\(\)]*)$/|confirmed',
+            'phone_number' => 'nullable|string|max:20|regex:/^([0-9\s\-\+\(\)]*)$/',
         ]);
 
         if($validator->fails()){
             return back()->withErrors($validator)->withInput();
         }
 
-        $data = $request->only(['name', 'email', 'phone']);
+        $data = $request->only(['name', 'email', 'phone_number']);
         if($request->password){
             $data['password'] = $request->password;
         }

@@ -54,31 +54,77 @@ class User extends Authenticatable
         ];
     }
 
-    public function isCustomer(){
+    // NEW FACTORY PATTERN METHODS
+    public function getUserType(): \App\Contracts\UserTypeInterface
+    {
+        $factory = app(\App\Contracts\UserFactoryInterface::class);
+        return $factory->getUserType($this->role);
+    }
+
+    public function getPermissions(): array
+    {
+        return $this->getUserType()->getPermissions();
+    }
+
+    public function hasPermission(string $permission): bool
+    {
+        $permissions = $this->getPermissions();
+        return in_array('*', $permissions) || in_array($permission, $permissions);
+    }
+
+    // UPDATED METHODS TO USE FACTORY PATTERN
+    public function canManageHalls(): bool
+    {
+        return $this->getUserType()->canManageHalls();
+    }
+
+    public function canViewAllBookings(): bool
+    {
+        return $this->getUserType()->canViewAllBookings();
+    }
+
+    public function canApproveApplications(): bool
+    {
+        return $this->getUserType()->canApproveApplications();
+    }
+
+    // EXISTING METHODS (keep these)
+    public function isCustomer(): bool
+    {
         return $this->role === 'customer';
     }
 
-    public function isManager(){
+    public function isManager(): bool
+    {
         return $this->role === 'manager';
     }
 
-    public function canApplyForManager(){
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function canApplyForManager(): bool
+    {
         return $this->role === 'customer' && $this->manager_status === 'none';
     }
 
-    public function hasManagerApplicationPending(){
+    public function hasManagerApplicationPending(): bool
+    {
         return $this->manager_status === 'pending';
     }
 
-    public function applyForManager($reason){
+    public function applyForManager($reason): void
+    {
         $this->update([
-            'manager-status' => 'pending',
-        'manager_application_reason' => $reason,
-        'manager_applied_at' => now(),
+            'manager_status' => 'pending', // Fixed typo: was 'manager-status'
+            'manager_application_reason' => $reason,
+            'manager_applied_at' => now(),
         ]);
     }
 
-    public function approveManagerApplication(){
+    public function approveManagerApplication(): void
+    {
         $this->update([
             'role' => 'manager',
             'manager_status' => 'approved',
@@ -86,7 +132,8 @@ class User extends Authenticatable
         ]);
     }
 
-    public  function rejectManagerApplication(){
+    public function rejectManagerApplication(): void
+    {
         $this->update([
             'manager_status' => 'rejected',
             'manager_reviewed_at' => now(),

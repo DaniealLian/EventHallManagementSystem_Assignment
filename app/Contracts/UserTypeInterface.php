@@ -4,13 +4,6 @@ namespace App\Contracts;
 
 use App\Models\User;
 
-interface UserFactoryInterface
-{
-    public function createUser(string $userType, array $data): User;
-    public function updateUser(User $user, array $data): bool;
-    public function getUserType(string $role): UserTypeInterface;
-}
-
 interface UserTypeInterface
 {
     public function getRole(): string;
