@@ -16,9 +16,9 @@ class PaymentController extends Controller
     /**
      * Show payment method selection page
      */
-    public function index()
+    public function showPayment()
     {
-        return view('payment.index');
+        return view('payment.paymentPage');
     }
 
     /**

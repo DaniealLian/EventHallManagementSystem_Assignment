@@ -27,7 +27,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-4">
         <div class="card text-white bg-success">
             <div class="card-body">
@@ -44,7 +44,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-4">
     <div class="card text-white bg-info">
             <div class="card-body">
@@ -58,6 +58,23 @@
                     </div>
                 </div>
                 <a href="TODO" class="btn btn-light btn-sm mt-2">Book Now</a>
+            </div>
+        </div>
+    </div>
+
+        <div class="col-md-4">
+    <div class="card text-white bg-info">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Payment Page</h5>
+                        <h2>TODO</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-check-circle fa-3x"></i>
+                    </div>
+                </div>
+                <a href="{{ route('paymentPage') }}" class="btn btn-light btn-sm mt-2">Make payment(test)</a>
             </div>
         </div>
     </div>
