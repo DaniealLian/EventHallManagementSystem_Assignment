@@ -3,11 +3,14 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PaymentController;
 
+// Default homepage → redirect to payment selection
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('payment.index');
 });
 
+<<<<<<< Updated upstream
 //authentication routes
 // Route::middleware('guest')->group(function () {
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -39,3 +42,10 @@ if (file_exists(__DIR__.'/auth.php')) {
     require __DIR__.'/auth.php';
 }
 ?>
+=======
+// Payment routes
+Route::get('/payment', [PaymentController::class, 'index'])->name('payment.index');
+Route::post('/payment/checkout', [PaymentController::class, 'checkoutForm'])->name('payment.checkout');
+Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
+Route::get('/payment/status', [PaymentController::class, 'status'])->name('payment.status');
+>>>>>>> Stashed changes
