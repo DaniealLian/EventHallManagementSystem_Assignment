@@ -54,22 +54,26 @@ class UserController extends Controller
         return view('auth.eventMngRegister',['user'=>$user]);
     }
 
-    public function submitManagerApplication(Request $request){
+    public function submitManagerApplication(Request $request)
+    {
         $user = auth()->user();
 
-        if(!$user->canApplyForManager()){
-            return redirect()->route('profile')->with('error', 'You cannot apply for manager role at this time. ');
+        if (!$user->canApplyForManager()) {
+            return redirect()->route('profile')->with('error', 'You cannot apply for manager role at this time.');
         }
 
-        $validator = Validator::make($request->all(),[
-            'address'=>'required|string|max:1000',
+        $validator = Validator::make($request->all(), [
+            'company_address' => 'required|string|max:1000',
+            'company_name' => 'required|string|max:255',
+            'company_email' => 'required|email|max:255',
+            'experience' => 'nullable|string|max:2000',
         ]);
 
-        if ($validator->fails()){
+        if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
 
-        $user-->applyForManager($request->address);
+        $user->applyForManager($request->only(['company_address', 'company_name', 'company_email', 'experience']));
 
         return redirect()->route('profile')->with('success', 'Manager application submitted successfully!');
     }

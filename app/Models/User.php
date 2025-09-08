@@ -24,7 +24,10 @@ class User extends Authenticatable
         'phone_number',
         'role',
         'manager_status',
-        'manager_company_address',
+        'company_address',
+        'company_name',
+        'company_email',
+        'experience',
         'manager_applied_at',
     ];
 
@@ -48,12 +51,27 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'manager_applied_at'=>'datetime',
-            'manager_reviewed_at'=>'datetime',
+            'manager_applied_at' => 'datetime',
         ];
     }
 
-    // NEW FACTORY PATTERN METHODS
+    // RELATIONSHIPS
+    public function events()
+    {
+        return $this->hasMany(Event::class, 'created_by');
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    // FACTORY PATTERN METHODS
     public function getUserType(): \App\Contracts\UserTypeInterface
     {
         $factory = app(\App\Contracts\UserFactoryInterface::class);
@@ -71,7 +89,7 @@ class User extends Authenticatable
         return in_array('*', $permissions) || in_array($permission, $permissions);
     }
 
-    // UPDATED METHODS TO USE FACTORY PATTERN
+    // ROLE-BASED METHODS USING FACTORY PATTERN
     public function canManageHalls(): bool
     {
         return $this->getUserType()->canManageHalls();
@@ -87,7 +105,7 @@ class User extends Authenticatable
         return $this->getUserType()->canApproveApplications();
     }
 
-    // EXISTING METHODS (keep these)
+    // SIMPLE ROLE CHECKING METHODS
     public function isCustomer(): bool
     {
         return $this->role === 'customer';
@@ -103,6 +121,7 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+    // MANAGER APPLICATION METHODS
     public function canApplyForManager(): bool
     {
         return $this->role === 'customer' && $this->manager_status === 'none';
@@ -113,11 +132,14 @@ class User extends Authenticatable
         return $this->manager_status === 'pending';
     }
 
-    public function applyForManager($address): void
+    public function applyForManager(array $applicationData): void
     {
         $this->update([
-            'manager_status' => 'pending', // Fixed typo: was 'manager-status'
-            'manager_company_address' => $address,
+            'manager_status' => 'pending',
+            'company_address' => $applicationData['company_address'],
+            'company_name' => $applicationData['company_name'],
+            'company_email' => $applicationData['company_email'],
+            'experience' => $applicationData['experience'] ?? null,
             'manager_applied_at' => now(),
         ]);
     }
@@ -135,5 +157,38 @@ class User extends Authenticatable
         $this->update([
             'manager_status' => 'rejected',
         ]);
+    }
+
+    // SCOPES
+    public function scopeCustomers($query)
+    {
+        return $query->where('role', 'customer');
+    }
+
+    public function scopeManagers($query)
+    {
+        return $query->where('role', 'manager');
+    }
+
+    public function scopeAdmins($query)
+    {
+        return $query->where('role', 'admin');
+    }
+
+    // ACCESSORS
+    public function getRoleBadgeAttribute()
+    {
+        $badges = [
+            'customer' => 'bg-primary',
+            'manager' => 'bg-success',
+            'admin' => 'bg-danger',
+        ];
+
+        return $badges[$this->role] ?? 'bg-secondary';
+    }
+
+    public function getFormattedRoleAttribute()
+    {
+        return ucfirst($this->role);
     }
 }

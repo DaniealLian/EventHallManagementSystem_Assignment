@@ -20,8 +20,6 @@ return new class extends Migration
             $table->string('phone_number')->nullable();
             $table->enum('role', ['admin', 'customer', 'manager'])->default('customer');
             $table->enum('manager_status', ['none', 'pending', 'manager'])->default('none');
-            $table->text('manager_company_address')->nullable();
-            $table->timestamp('manager_applied_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

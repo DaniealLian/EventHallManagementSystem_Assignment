@@ -31,21 +31,54 @@
                             <strong>Applying as:</strong> {{ $user->name }} ({{ $user->email }})
                         </div>
 
-                        <!-- Fixed form action to match route name -->
                         <form method="POST" action="{{ route('manager.submit') }}">
                             @csrf
 
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="company_name" class="form-label">Company Name *</label>
+                                        <input type="text" class="form-control @error('company_name') is-invalid @enderror"
+                                               id="company_name" name="company_name" value="{{ old('company_name') }}" required>
+                                        @error('company_name')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="company_email" class="form-label">Company Email *</label>
+                                        <input type="email" class="form-control @error('company_email') is-invalid @enderror"
+                                               id="company_email" name="company_email" value="{{ old('company_email') }}" required>
+                                        @error('company_email')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="mb-3">
-                                <label for="address" class="form-label">Address *</label>
-                                <textarea class="form-control @error('address') is-invalid @enderror"
-                                          id="address" name="address" rows="3" required>{{ old('address') }}</textarea>
-                                @error('address')
+                                <label for="company_address" class="form-label">Company Address *</label>
+                                <textarea class="form-control @error('company_address') is-invalid @enderror"
+                                          id="company_address" name="company_address" rows="3" required>{{ old('company_address') }}</textarea>
+                                @error('company_address')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="experience" class="form-label">Experience & Background</label>
+                                <textarea class="form-control @error('experience') is-invalid @enderror"
+                                          id="experience" name="experience" rows="4"
+                                          placeholder="Tell us about your event management experience, qualifications, and why you want to become an event manager...">{{ old('experience') }}</textarea>
+                                @error('experience')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <div class="alert alert-warning">
-                                <small><strong>Note:</strong> Your application will be reviewed and requires admin approval before you can manage events.</small>
+                                <small><strong>Note:</strong> Your application will be reviewed by an administrator. Please ensure all information is accurate as this will be used for verification purposes.</small>
                             </div>
 
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
