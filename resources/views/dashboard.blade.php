@@ -88,12 +88,12 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <a href="{{ route('halls.create') }}" class="btn btn-success">
+                        <a href="TODO" class="btn btn-success">
                             <i class="fas fa-plus"></i> Add New Hall
                         </a>
                     </div>
                     <div class="col-md-6">
-                        <a href="{{ route('halls.index') }}" class="btn btn-primary">
+                        <a href="TODO" class="btn btn-primary">
                             <i class="fas fa-cog"></i> Manage Halls
                         </a>
                     </div>

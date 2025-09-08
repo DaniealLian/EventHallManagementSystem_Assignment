@@ -19,9 +19,25 @@ return new class extends Migration
             $table->string('password');
             $table->string('phone_number')->nullable();
             $table->enum('role', ['admin', 'customer', 'manager'])->default('customer');
-            $table->enum('manager_status', ['none', 'pending', 'manager'])->default('none');
+            $table->enum('manager_status', ['none', 'pending', 'approved', 'rejected'])->default('none');
+            $table->string('company_name')->nullable();
+            $table->string('company_email')->nullable();
+            $table->text('company_address')->nullable();
+            $table->text('experience')->nullable();
+            $table->timestamp('manager_applied_at')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
+        });
+
+        Schema::table('users', function (Blueprint $table) {
+            // First, change the enum to include the correct values
+            $table->dropColumn('manager_status');
+        });
+
+        Schema::table('users', function (Blueprint $table) {
+            // Add the corrected enum with proper values
+            $table->enum('manager_status', ['none', 'pending', 'approved', 'rejected'])->default('none')->after('role');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -48,5 +64,21 @@ return new class extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::table('users', function (Blueprint $table) {
+        $table->dropColumn([
+            'company_name',
+            'company_email',
+            'company_address',
+            'experience',
+            'manager_applied_at']);
+         });
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('manager_status');
+        });
+
+        Schema::table('users', function (Blueprint $table) {
+        $table->enum('manager_status', ['none', 'pending', 'manager'])->default('none')->after('role');
+        });
     }
+
 };
