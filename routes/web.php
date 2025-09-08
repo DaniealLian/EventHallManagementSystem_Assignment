@@ -32,7 +32,9 @@ Route::middleware('auth')->group(function(){
 
     //Manager Application routes
     Route::get('/apply-manager', [UserController::class, 'showManagerApplication'])->name('manager.apply');
-    Route::put('/apply-manager', [UserController::class, 'submitManagerApplication'])->name('manager.submit');
+    // Route::put('/apply-manager', [UserController::class, 'submitManagerApplication'])->name('manager.submit');
+    Route::post('/apply-manager', [UserController::class, 'submitManagerApplication'])->name('manager.submit');
+
 
     //Payment routes
     Route::get('/payment', [PaymentController::class, 'showPayment'])->name('paymentPage');

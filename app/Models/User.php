@@ -24,9 +24,8 @@ class User extends Authenticatable
         'phone_number',
         'role',
         'manager_status',
-        'manager_application_reason',
+        'manager_company_address',
         'manager_applied_at',
-        'manager_reviewed_at',
     ];
 
     /**
@@ -114,11 +113,11 @@ class User extends Authenticatable
         return $this->manager_status === 'pending';
     }
 
-    public function applyForManager($reason): void
+    public function applyForManager($address): void
     {
         $this->update([
             'manager_status' => 'pending', // Fixed typo: was 'manager-status'
-            'manager_application_reason' => $reason,
+            'manager_company_address' => $address,
             'manager_applied_at' => now(),
         ]);
     }
@@ -128,7 +127,6 @@ class User extends Authenticatable
         $this->update([
             'role' => 'manager',
             'manager_status' => 'approved',
-            'manager_reviewed_at' => now(),
         ]);
     }
 
@@ -136,7 +134,6 @@ class User extends Authenticatable
     {
         $this->update([
             'manager_status' => 'rejected',
-            'manager_reviewed_at' => now(),
         ]);
     }
 }

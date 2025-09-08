@@ -32,48 +32,14 @@
                         </div>
 
                         <!-- Fixed form action to match route name -->
-                        <form method="POST" action="{{ route('event-manager.eventMngRegister') }}">
+                        <form method="POST" action="{{ route('manager.submit') }}">
                             @csrf
-                            
+
                             <div class="mb-3">
                                 <label for="address" class="form-label">Address *</label>
-                                <textarea class="form-control @error('address') is-invalid @enderror" 
+                                <textarea class="form-control @error('address') is-invalid @enderror"
                                           id="address" name="address" rows="3" required>{{ old('address') }}</textarea>
                                 @error('address')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="phone_number" class="form-label">Phone Number *</label>
-                                        <input type="tel" class="form-control @error('phone_number') is-invalid @enderror" 
-                                               id="phone_number" name="phone_number" value="{{ old('phone_number') }}" required>
-                                        @error('phone_number')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="company_name" class="form-label">Company Name</label>
-                                        <input type="text" class="form-control @error('company_name') is-invalid @enderror" 
-                                               id="company_name" name="company_name" value="{{ old('company_name') }}">
-                                        @error('company_name')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="experience" class="form-label">Experience & Background</label>
-                                <textarea class="form-control @error('experience') is-invalid @enderror" 
-                                          id="experience" name="experience" rows="4" 
-                                          placeholder="Tell us about your event management experience...">{{ old('experience') }}</textarea>
-                                @error('experience')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
