@@ -57,25 +57,25 @@ class AdminService
     }
 
     // Deactivate admin (soft delete alternative)
-    public function deactivateAdmin(Admin $admin, Admin $deactivatedBy): bool
-    {
-        if (!$deactivatedBy->canManageAdmins()) {
-            throw new \InvalidArgumentException("Insufficient permissions to deactivate admin");
-        }
+    // public function deactivateAdmin(Admin $admin, Admin $deactivatedBy): bool
+    // {
+    //     if (!$deactivatedBy->canManageAdmins()) {
+    //         throw new \InvalidArgumentException("Insufficient permissions to deactivate admin");
+    //     }
 
-        if ($admin->isSuperAdmin() && !$deactivatedBy->isSuperAdmin()) {
-            throw new \InvalidArgumentException("Cannot deactivate super admin");
-        }
+    //     if ($admin->isSuperAdmin() && !$deactivatedBy->isSuperAdmin()) {
+    //         throw new \InvalidArgumentException("Cannot deactivate super admin");
+    //     }
 
-        return $admin->update(['is_active' => false]);
-    }
+    //     return $admin->update(['is_active' => false]);
+    // }
 
-    public function activateAdmin(Admin $admin, Admin $activatedBy): bool
-    {
-        if (!$activatedBy->canManageAdmins()) {
-            throw new \InvalidArgumentException("Insufficient permissions to activate admin");
-        }
+    // public function activateAdmin(Admin $admin, Admin $activatedBy): bool
+    // {
+    //     if (!$activatedBy->canManageAdmins()) {
+    //         throw new \InvalidArgumentException("Insufficient permissions to activate admin");
+    //     }
 
-        return $admin->update(['is_active' => true]);
-    }
+    //     return $admin->update(['is_active' => true]);
+    // }
 }

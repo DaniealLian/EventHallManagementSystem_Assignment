@@ -87,11 +87,6 @@ class Admin extends Authenticatable
         return $this->hasPermission('manage_halls') || $this->isSuperAdmin();
     }
 
-    public function canViewReports(): bool
-    {
-        return $this->hasPermission('view_reports') || $this->isSuperAdmin();
-    }
-
     public function canManageAdmins(): bool
     {
         return $this->isSuperAdmin(); // Only super admin can manage other admins

@@ -15,8 +15,8 @@ class AdminFactory implements AdminFactoryInterface
 {
     protected array $adminTypes = [
         'super' => SuperAdmin::class,
-        'regular' => RegularAdmin::class,
-        'moderator' => ModeratorAdmin::class,
+        // 'regular' => RegularAdmin::class,
+        // 'moderator' => ModeratorAdmin::class,
     ];
 
     public function createAdmin(string $adminType, array $data): Admin
@@ -73,17 +73,17 @@ class AdminFactory implements AdminFactoryInterface
     }
 
     // Security method - only super admins can create other admins
-    public function createAdminWithPermissions(string $adminType, array $data, ?Admin $creator = null): Admin
-    {
-        if ($creator && !$creator->isSuperAdmin()) {
-            throw new InvalidArgumentException("Only super admins can create new admin accounts");
-        }
+    // public function createAdminWithPermissions(string $adminType, array $data, ?Admin $creator = null): Admin
+    // {
+    //     if ($creator && !$creator->isSuperAdmin()) {
+    //         throw new InvalidArgumentException("Only super admins can create new admin accounts");
+    //     }
 
-        // Super admins can only be created by existing super admins
-        if ($adminType === 'super' && $creator && !$creator->isSuperAdmin()) {
-            throw new InvalidArgumentException("Only super admins can create other super admins");
-        }
+    //     // Super admins can only be created by existing super admins
+    //     if ($adminType === 'super' && $creator && !$creator->isSuperAdmin()) {
+    //         throw new InvalidArgumentException("Only super admins can create other super admins");
+    //     }
 
-        return $this->createAdmin($adminType, $data);
-    }
+    //     return $this->createAdmin($adminType, $data);
+    // }
 }

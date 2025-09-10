@@ -25,13 +25,9 @@ return new class extends Migration
             $table->text('company_address')->nullable();
             $table->text('experience')->nullable();
             $table->timestamp('manager_applied_at')->nullable();
-            $table->unsignedBigInteger('created_by_admin')->nullable(); // Track which admin created this user
 
             $table->rememberToken();
             $table->timestamps();
-
-            // Foreign key constraint
-            $table->foreign('created_by_admin')->references('id')->on('admins')->onDelete('set null');
 
             // Indexes
             $table->index('role');

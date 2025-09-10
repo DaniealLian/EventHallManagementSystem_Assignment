@@ -6,7 +6,7 @@ use App\Models\Admin;
 
 interface AdminFactoryInterface
 {
-    public function createAdmin(string $adminType, array $data): Admin;
+    // public function createAdmin(string $adminType, array $data): Admin;
     public function updateAdmin(Admin $admin, array $data): bool;
     public function getAdminType(string $type): AdminTypeInterface;
 }

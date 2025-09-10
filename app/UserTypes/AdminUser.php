@@ -98,48 +98,48 @@ class RegularAdmin implements AdminTypeInterface
 }
 
 // Moderator Admin Type (Limited permissions)
-class ModeratorAdmin implements AdminTypeInterface
-{
-    public function getType(): string
-    {
-        return 'moderator';
-    }
+// class ModeratorAdmin implements AdminTypeInterface
+// {
+//     public function getType(): string
+//     {
+//         return 'moderator';
+//     }
 
-    public function getPermissions(): array
-    {
-        return [
-            'view_reports',
-            'approve_applications',
-            'moderate_content'
-        ];
-    }
+//     public function getPermissions(): array
+//     {
+//         return [
+//             'view_reports',
+//             'approve_applications',
+//             'moderate_content'
+//         ];
+//     }
 
-    public function isSuperAdmin(): bool
-    {
-        return false;
-    }
+//     public function isSuperAdmin(): bool
+//     {
+//         return false;
+//     }
 
-    public function getDefaultAttributes(): array
-    {
-        return [
-            'is_super_admin' => false,
-            'is_active' => true,
-            'permissions' => $this->getPermissions()
-        ];
-    }
+//     public function getDefaultAttributes(): array
+//     {
+//         return [
+//             'is_super_admin' => false,
+//             'is_active' => true,
+//             'permissions' => $this->getPermissions()
+//         ];
+//     }
 
-    public function createDatabaseRecord(array $data): Admin
-    {
-        $adminData = array_merge($data, $this->getDefaultAttributes());
+//     public function createDatabaseRecord(array $data): Admin
+//     {
+//         $adminData = array_merge($data, $this->getDefaultAttributes());
 
-        return Admin::create([
-            'name' => $adminData['name'],
-            'email' => $adminData['email'],
-            'password' => Hash::make($adminData['password']),
-            'phone_number' => $adminData['phone_number'] ?? null,
-            'is_super_admin' => false,
-            'is_active' => true,
-            'permissions' => $this->getPermissions()
-        ]);
-    }
-}
+//         return Admin::create([
+//             'name' => $adminData['name'],
+//             'email' => $adminData['email'],
+//             'password' => Hash::make($adminData['password']),
+//             'phone_number' => $adminData['phone_number'] ?? null,
+//             'is_super_admin' => false,
+//             'is_active' => true,
+//             'permissions' => $this->getPermissions()
+//         ]);
+//     }
+// }
