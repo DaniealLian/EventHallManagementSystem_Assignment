@@ -40,7 +40,6 @@ class Admin extends Authenticatable
         ];
     }
 
-    // ADMIN-SPECIFIC METHODS
     public function isSuperAdmin(): bool
     {
         return $this->is_super_admin;
@@ -54,7 +53,7 @@ class Admin extends Authenticatable
     public function hasPermission(string $permission): bool
     {
         if ($this->isSuperAdmin()) {
-            return true; // Super admin has all permissions
+            return true;
         }
 
         return in_array($permission, $this->permissions ?? []);
@@ -89,7 +88,7 @@ class Admin extends Authenticatable
 
     public function canManageAdmins(): bool
     {
-        return $this->isSuperAdmin(); // Only super admin can manage other admins
+        return $this->isSuperAdmin();
     }
 
     public function canApproveApplications(): bool
@@ -97,13 +96,11 @@ class Admin extends Authenticatable
         return $this->hasPermission('approve_applications') || $this->isSuperAdmin();
     }
 
-    // RELATIONSHIPS
     public function createdUsers()
     {
         return $this->hasMany(User::class, 'created_by_admin');
     }
 
-    // SCOPES
     public function scopeActive($query)
     {
         return $query->where('is_active', true);

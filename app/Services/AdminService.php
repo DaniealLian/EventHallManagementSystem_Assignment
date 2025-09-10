@@ -22,7 +22,6 @@ class AdminService
 
     public function login(array $credentials): Admin|false
     {
-        // Use a different guard for admin authentication
         if (Auth::guard('admin')->attempt($credentials)) {
             $admin = Auth::guard('admin')->user();
             $admin->updateLastLogin();
@@ -41,7 +40,6 @@ class AdminService
         Auth::guard('admin')->logout();
     }
 
-    // Get admin permissions through factory
     public function getAdminPermissions(Admin $admin): array
     {
         if ($admin->isSuperAdmin()) {
@@ -50,32 +48,9 @@ class AdminService
         return $admin->permissions ?? [];
     }
 
-    // Check if admin can perform action
     public function canAdminPerform(Admin $admin, string $permission): bool
     {
         return $admin->hasPermission($permission);
     }
 
-    // Deactivate admin (soft delete alternative)
-    // public function deactivateAdmin(Admin $admin, Admin $deactivatedBy): bool
-    // {
-    //     if (!$deactivatedBy->canManageAdmins()) {
-    //         throw new \InvalidArgumentException("Insufficient permissions to deactivate admin");
-    //     }
-
-    //     if ($admin->isSuperAdmin() && !$deactivatedBy->isSuperAdmin()) {
-    //         throw new \InvalidArgumentException("Cannot deactivate super admin");
-    //     }
-
-    //     return $admin->update(['is_active' => false]);
-    // }
-
-    // public function activateAdmin(Admin $admin, Admin $activatedBy): bool
-    // {
-    //     if (!$activatedBy->canManageAdmins()) {
-    //         throw new \InvalidArgumentException("Insufficient permissions to activate admin");
-    //     }
-
-    //     return $admin->update(['is_active' => true]);
-    // }
 }

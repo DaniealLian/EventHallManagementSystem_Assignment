@@ -17,7 +17,6 @@ class UserService
 
     public function register(array $data): User
     {
-        // Default to customer for registration
         $userType = $data['role'] ?? 'customer';
         return $this->userFactory->createUser($userType, $data);
     }
@@ -45,14 +44,12 @@ class UserService
         Auth::logout();
     }
 
-    // Get user permissions through factory
     public function getUserPermissions(User $user): array
     {
         $userType = $this->userFactory->getUserType($user->role);
         return $userType->getPermissions();
     }
 
-    // Check if user can perform action
     public function canUserPerform(User $user, string $permission): bool
     {
         $permissions = $this->getUserPermissions($user);

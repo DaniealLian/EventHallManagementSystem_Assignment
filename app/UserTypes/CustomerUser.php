@@ -63,7 +63,6 @@ class CustomerUser implements UserTypeInterface
     }
 }
 
-// Manager User Type
 class ManagerUser implements UserTypeInterface
 {
     public function getRole(): string

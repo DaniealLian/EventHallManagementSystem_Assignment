@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
 
-//USER REGISTRATION FUNCTIONS
-
     protected $userService;
 
     public function __construct(UserService $userService){
@@ -26,7 +24,6 @@ class AuthController extends Controller
         return view("auth.register");
     }
 
-    // Handle registration
     public function register(Request $request)
     {
         // debug code
@@ -47,7 +44,6 @@ class AuthController extends Controller
         return redirect()->intended('dashboard')->with('success', 'Registration successful! Please login.');
     }
 
-    //USER LOGIN FUNCTIONS
     public function showlogin ()
     {
         return view("auth.login");
@@ -77,7 +73,6 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        // $this->userService->logout();
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

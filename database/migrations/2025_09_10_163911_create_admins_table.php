@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+
     public function up(): void
     {
         Schema::create('admins', function (Blueprint $table) {
@@ -25,16 +23,12 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
 
-            // Indexes for better performance
             $table->index('is_super_admin');
             $table->index('is_active');
             $table->index('email');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('admins');

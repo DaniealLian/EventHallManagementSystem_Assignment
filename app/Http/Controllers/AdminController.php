@@ -14,7 +14,7 @@ class AdminController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:admin');
+        $this->middleware('auth:admin')->except(['showLogin', 'login']);
     }
 
     // Show admin login form
@@ -23,7 +23,7 @@ class AdminController extends Controller
         if (Auth::guard('admin')->check()) {
             return redirect()->route('admin.dashboard');
         }
-        return view('admin.login');
+        return view('admin.adminLogin');
     }
 
     // Handle admin login
@@ -66,7 +66,7 @@ class AdminController extends Controller
         $pendingApplications = User::where('manager_status', 'pending')->count();
         $recentUsers = User::latest()->take(5)->get();
 
-        return view('admin.dashboard', compact(
+        return view('admin.adminDashboard', compact(
             'totalUsers',
             'totalManagers',
             'pendingApplications',
@@ -77,7 +77,7 @@ class AdminController extends Controller
     // Show all users
     public function users()
     {
-        $users = User::with(['events', 'bookings'])
+        $users = User::with(['events', 'reservations'])
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
@@ -91,7 +91,7 @@ class AdminController extends Controller
             ->orderBy('manager_applied_at', 'desc')
             ->get();
 
-        return view('admin.manager-applications', compact('applications'));
+        return view('admin.managerMngment', compact('applications'));
     }
 
     // Approve manager application
@@ -109,7 +109,6 @@ class AdminController extends Controller
         return back()->with('success', "Manager application for {$user->name} has been approved!");
     }
 
-    // Reject manager application
     public function rejectApplication(User $user)
     {
         if ($user->manager_status !== 'pending') {
@@ -123,7 +122,6 @@ class AdminController extends Controller
         return back()->with('success', "Manager application for {$user->name} has been rejected.");
     }
 
-    // Delete user
     public function deleteUser(User $user)
     {
         $userName = $user->name;
@@ -132,7 +130,6 @@ class AdminController extends Controller
         return back()->with('success', "User {$userName} has been deleted successfully.");
     }
 
-    // Promote user to manager directly
     public function promoteToManager(User $user)
     {
         if ($user->role === 'manager') {
@@ -147,7 +144,6 @@ class AdminController extends Controller
         return back()->with('success', "User {$user->name} has been promoted to manager!");
     }
 
-    // Demote manager to customer
     public function demoteManager(User $user)
     {
         if ($user->role !== 'manager') {
@@ -162,37 +158,4 @@ class AdminController extends Controller
         return back()->with('success', "Manager {$user->name} has been demoted to customer.");
     }
 
-    // Admin profile
-    // public function profile()
-    // {
-    //     $admin = Auth::guard('admin')->user();
-    //     return view('admin.profile', compact('admin'));
-    // }
-
-    // Update admin profile
-    // public function updateProfile(Request $request)
-    // {
-    //     $admin = Auth::guard('admin')->user();
-
-    //     $request->validate([
-    //         'name' => 'required|string|max:255',
-    //         'email' => 'required|string|email|max:255|unique:admins,email,' . $admin->id,
-    //         'phone_number' => 'nullable|string|max:20',
-    //         'password' => 'nullable|string|min:8|confirmed',
-    //     ]);
-
-    //     $updateData = [
-    //         'name' => $request->name,
-    //         'email' => $request->email,
-    //         'phone_number' => $request->phone_number,
-    //     ];
-
-    //     if ($request->filled('password')) {
-    //         $updateData['password'] = Hash::make($request->password);
-    //     }
-
-    //     $admin->update($updateData);
-
-    //     return back()->with('success', 'Profile updated successfully!');
-    // }
 }

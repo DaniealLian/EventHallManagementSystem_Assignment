@@ -9,14 +9,8 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
@@ -31,21 +25,11 @@ class User extends Authenticatable
         'manager_applied_at',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -55,23 +39,7 @@ class User extends Authenticatable
         ];
     }
 
-    // RELATIONSHIPS
-    public function events()
-    {
-        return $this->hasMany(Event::class, 'created_by');
-    }
 
-    public function bookings()
-    {
-        return $this->hasMany(Booking::class);
-    }
-
-    public function transactions()
-    {
-        return $this->hasMany(Transaction::class);
-    }
-
-    // FACTORY PATTERN METHODS
     public function getUserType(): \App\Contracts\UserTypeInterface
     {
         $factory = app(\App\Contracts\UserFactoryInterface::class);
@@ -89,23 +57,6 @@ class User extends Authenticatable
         return in_array('*', $permissions) || in_array($permission, $permissions);
     }
 
-    // ROLE-BASED METHODS USING FACTORY PATTERN
-    public function canManageHalls(): bool
-    {
-        return $this->getUserType()->canManageHalls();
-    }
-
-    public function canViewAllBookings(): bool
-    {
-        return $this->getUserType()->canViewAllBookings();
-    }
-
-    public function canApproveApplications(): bool
-    {
-        return $this->getUserType()->canApproveApplications();
-    }
-
-    // SIMPLE ROLE CHECKING METHODS
     public function isCustomer(): bool
     {
         return $this->role === 'customer';
@@ -116,12 +67,6 @@ class User extends Authenticatable
         return $this->role === 'manager';
     }
 
-    public function isAdmin(): bool
-    {
-        return $this->role === 'admin';
-    }
-
-    // MANAGER APPLICATION METHODS
     public function canApplyForManager(): bool
     {
         return $this->role === 'customer' && $this->manager_status === 'none';
@@ -159,7 +104,6 @@ class User extends Authenticatable
         ]);
     }
 
-    // SCOPES
     public function scopeCustomers($query)
     {
         return $query->where('role', 'customer');
@@ -170,12 +114,6 @@ class User extends Authenticatable
         return $query->where('role', 'manager');
     }
 
-    public function scopeAdmins($query)
-    {
-        return $query->where('role', 'admin');
-    }
-
-    // ACCESSORS
     public function getRoleBadgeAttribute()
     {
         $badges = [

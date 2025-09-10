@@ -47,10 +47,10 @@ Route::middleware('auth')->group(function(){
 // Admin stuff
 Route::prefix('admin')->name('admin.')->group(function () {
     // Admin login/logout (not protected by admin middleware)
-    Route::middleware('guest:admin')->group(function () {
+    // Route::middleware('guest:admin')->group(function () {
         Route::get('/login', [AdminController::class, 'showLogin'])->name('login');
         Route::post('/login', [AdminController::class, 'login']);
-    });
+    // });
 
     // Protected admin routes
     Route::middleware('auth:admin')->group(function () {

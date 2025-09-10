@@ -9,18 +9,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AdminAuthenticate
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::guard('admin')->check()) {
             return redirect()->route('admin.login')->with('error', 'Please login to access admin panel.');
         }
 
-        // Check if admin is active
         $admin = Auth::guard('admin')->user();
         if (!$admin->isActive()) {
             Auth::guard('admin')->logout();
@@ -31,14 +25,8 @@ class AdminAuthenticate
     }
 }
 
-// Additional middleware for checking admin permissions
 class CheckAdminPermission
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next, string $permission): Response
     {
         if (!Auth::guard('admin')->check()) {
@@ -55,14 +43,8 @@ class CheckAdminPermission
     }
 }
 
-// Middleware to redirect authenticated admins
 class AdminRedirectIfAuthenticated
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::guard('admin')->check()) {
