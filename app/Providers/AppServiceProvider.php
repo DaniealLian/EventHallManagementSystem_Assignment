@@ -4,9 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Contracts\UserFactoryInterface;
-use App\Contracts\EventManagerFactoryInterface;
+use App\Contracts\AdminFactoryInterface;
 use App\Factories\UserFactory;
-use App\Factories\EventManagerFactory;
+use App\Factories\AdminFactory;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,8 +15,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        // User factory binding (for customers and managers)
         $this->app->bind(UserFactoryInterface::class, UserFactory::class);
-        // $this->app->bind(EventManagerFactoryInterface::class, EventManagerFactory::class);
+
+        // Admin factory binding (for admin panel)
+        $this->app->bind(AdminFactoryInterface::class, AdminFactory::class);
     }
 
     /**

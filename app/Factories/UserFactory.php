@@ -7,7 +7,6 @@ use App\Contracts\UserTypeInterface;
 use App\Models\User;
 use App\UserTypes\CustomerUser;
 use App\UserTypes\ManagerUser;
-use App\UserTypes\AdminUser;
 use Illuminate\Support\Facades\Hash;
 use InvalidArgumentException;
 
@@ -16,7 +15,6 @@ class UserFactory implements UserFactoryInterface
     protected array $userTypes = [
         'customer' => CustomerUser::class,
         'manager' => ManagerUser::class,
-        'admin' => AdminUser::class,
     ];
 
     public function createUser(string $userType, array $data): User
@@ -65,11 +63,16 @@ class UserFactory implements UserFactoryInterface
     }
 
     // Additional factory method for creating users with permissions check
-    public function createUserWithPermissions(string $userType, array $data, ?User $creator = null): User
+    public function createUserWithPermissions(string $userType, array $data, ?\App\Models\Admin $creator = null): User
     {
-        // Business logic: Only admins can create managers/admins
-        if (in_array($userType, ['manager', 'admin']) && $creator && !$creator->isAdmin()) {
+        // Business logic: Only admins can create managers
+        if ($userType === 'manager' && $creator && !$creator->hasPermission('manage_users')) {
             throw new InvalidArgumentException("Insufficient permissions to create {$userType}");
+        }
+
+        // Track which admin created this user
+        if ($creator) {
+            $data['created_by_admin'] = $creator->id;
         }
 
         return $this->createUser($userType, $data);

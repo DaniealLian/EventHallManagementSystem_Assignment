@@ -18,29 +18,34 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('phone_number')->nullable();
-            $table->enum('role', ['admin', 'customer', 'manager'])->default('customer');
+            $table->enum('role', ['customer', 'manager'])->default('customer'); // Removed 'admin'
             $table->enum('manager_status', ['none', 'pending', 'approved', 'rejected'])->default('none');
             $table->string('company_name')->nullable();
             $table->string('company_email')->nullable();
             $table->text('company_address')->nullable();
             $table->text('experience')->nullable();
             $table->timestamp('manager_applied_at')->nullable();
+            $table->unsignedBigInteger('created_by_admin')->nullable(); // Track which admin created this user
 
             $table->rememberToken();
             $table->timestamps();
-        });
 
-        Schema::table('users', function (Blueprint $table) {
-            // First, change the enum to include the correct values
-            $table->dropColumn('manager_status');
-        });
+            // Foreign key constraint
+            $table->foreign('created_by_admin')->references('id')->on('admins')->onDelete('set null');
 
-        Schema::table('users', function (Blueprint $table) {
-            // Add the corrected enum with proper values
-            $table->enum('manager_status', ['none', 'pending', 'approved', 'rejected'])->default('none')->after('role');
+            // Indexes
+            $table->index('role');
+            $table->index('manager_status');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
+
+        // Admin password reset tokens
+        Schema::create('admin_password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
@@ -63,22 +68,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('admin_password_reset_tokens');
         Schema::dropIfExists('sessions');
-        Schema::table('users', function (Blueprint $table) {
-        $table->dropColumn([
-            'company_name',
-            'company_email',
-            'company_address',
-            'experience',
-            'manager_applied_at']);
-         });
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('manager_status');
-        });
-
-        Schema::table('users', function (Blueprint $table) {
-        $table->enum('manager_status', ['none', 'pending', 'manager'])->default('none')->after('role');
-        });
     }
-
 };
