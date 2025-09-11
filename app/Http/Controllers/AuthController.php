@@ -17,6 +17,8 @@ class AuthController extends Controller
 
     public function __construct(UserService $userService){
         $this->userService = $userService;
+
+        $this->middleware('throttle:5,15')->only('login');
     }
 
     public function showRegister ()

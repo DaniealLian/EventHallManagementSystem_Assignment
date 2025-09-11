@@ -15,6 +15,7 @@ class AdminController extends Controller
     public function __construct()
     {
         $this->middleware('auth:admin')->except(['showLogin', 'login']);
+        $this->middleware('throttle:5,15')->only('login');
     }
 
     // Show admin login form
