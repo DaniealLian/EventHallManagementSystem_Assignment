@@ -9,13 +9,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth:admin')->except(['showLogin', 'login']);
-        $this->middleware('throttle:5,15')->only('login');
     }
 
     // Show admin login form
@@ -30,23 +31,38 @@ class AdminController extends Controller
     // Handle admin login
     public function login(Request $request)
     {
+          // Check rate limiting first (more restrictive for admin)
+        $key = $this->throttleKey($request);
+        if (RateLimiter::tooManyAttempts($key, 3)) {
+            $seconds = RateLimiter::availableIn($key);
+            $minutes = ceil($seconds / 60);
+
+            return back()->withErrors([
+                'email' => "Too many login attempts. Account locked for {$minutes} minute(s)."
+            ])->withInput($request->only('email'));
+        }
+
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
         if (Auth::guard('admin')->attempt($credentials)) {
-            $request->session()->regenerate();
+            // Clear the rate limiter on successful login
+            RateLimiter::clear($key);
 
-            // Update last login
+            $request->session()->regenerate();
             Auth::guard('admin')->user()->update(['last_login_at' => now()]);
 
             return redirect()->intended(route('admin.dashboard'));
         }
 
+        // Increment failed attempts (30 minutes lockout for admin)
+        RateLimiter::hit($key, 30 * 60);
+
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
+        ])->withInput($request->only('email'));
     }
 
     // Admin logout
@@ -57,6 +73,11 @@ class AdminController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('admin.login');
+    }
+
+        protected function throttleKey(Request $request)
+    {
+        return 'admin_login_' . Str::lower($request->input('email')).'|'.$request->ip();
     }
 
     // Admin dashboard

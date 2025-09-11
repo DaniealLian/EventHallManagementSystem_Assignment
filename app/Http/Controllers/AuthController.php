@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -17,8 +19,6 @@ class AuthController extends Controller
 
     public function __construct(UserService $userService){
         $this->userService = $userService;
-
-        $this->middleware('throttle:5,15')->only('login');
     }
 
     public function showRegister ()
@@ -53,23 +53,39 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+$key = $this->throttleKey($request);
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            $seconds = RateLimiter::availableIn($key);
+            $minutes = ceil($seconds / 60);
+
+            return back()->withErrors([
+                'email' => "Too many login attempts. Please try again in {$minutes} minute(s)."
+            ])->withInput($request->only('email'));
+        }
+
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
         if($validator->fails()){
-            return back()-> withErrors($validator);
+            return back()->withErrors($validator);
         }
 
         $user = $this->userService->login($request->only('email', 'password'));
 
         if($user){
+            // Clear the rate limiter on successful login
+            RateLimiter::clear($key);
+
             $request->session()->regenerate();
             return redirect()->intended('dashboard');
         }
 
-        return back()->withErrors(['email'=>'Invalid credentials']);
+        // Increment failed attempts
+        RateLimiter::hit($key, 15 * 60); // 15 minutes
+
+        return back()->withErrors(['email' => 'Invalid credentials']);
 
     }
 
@@ -80,6 +96,11 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    protected function throttleKey(Request $request)
+    {
+        return Str::lower($request->input('email')).'|'.$request->ip();
     }
 
 }
