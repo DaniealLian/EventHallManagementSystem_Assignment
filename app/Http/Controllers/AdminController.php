@@ -34,7 +34,7 @@ class AdminController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::guard('admin')->attempt($credentials, $request->boolean('remember'))) {
+        if (Auth::guard('admin')->attempt($credentials)) {
             $request->session()->regenerate();
 
             // Update last login

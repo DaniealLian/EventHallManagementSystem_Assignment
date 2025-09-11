@@ -5,7 +5,7 @@
 @section('content')
 <div class="row mb-4">
     <div class="col-12">
-        <h2><i class="fas fa-clipboard-list"></i> Manager Applications</h2>
+        <h2>Manager Applications</h2>
         <p class="text-muted">Review and approve pending manager applications</p>
     </div>
 </div>
@@ -98,11 +98,11 @@
                     <div class="d-flex gap-2">
                         <button type="button" class="btn btn-success flex-fill"
                                 onclick="approveApplication({{ $application->id }}, '{{ $application->name }}')">
-                            <i class="fas fa-check"></i> Approve
+                            Approve
                         </button>
                         <button type="button" class="btn btn-danger flex-fill"
                                 onclick="rejectApplication({{ $application->id }}, '{{ $application->name }}')">
-                            <i class="fas fa-times"></i> Reject
+                            Reject
                         </button>
                     </div>
                 </div>
@@ -113,11 +113,10 @@
 @else
     <div class="card">
         <div class="card-body text-center py-5">
-            <i class="fas fa-clipboard-check fa-4x text-muted mb-4"></i>
             <h4 class="text-muted">No Pending Applications</h4>
             <p class="text-muted">All manager applications have been reviewed.</p>
             <a href="{{ route('admin.users') }}" class="btn btn-primary">
-                <i class="fas fa-users"></i> Manage Users
+                Manage Users
             </a>
         </div>
     </div>
@@ -137,7 +136,6 @@
                 </div>
                 <p class="text-center">Are you sure you want to approve <strong id="approveUserName"></strong>'s manager application?</p>
                 <div class="alert alert-success">
-                    <i class="fas fa-info-circle"></i>
                     <strong>This will:</strong>
                     <ul class="mb-0 mt-2">
                         <li>Promote the user to Manager role</li>

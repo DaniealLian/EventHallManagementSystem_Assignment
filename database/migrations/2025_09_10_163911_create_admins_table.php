@@ -20,7 +20,6 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->json('permissions')->nullable(); // Store permissions as JSON array
             $table->timestamp('last_login_at')->nullable();
-            $table->rememberToken();
             $table->timestamps();
 
             $table->index('is_super_admin');

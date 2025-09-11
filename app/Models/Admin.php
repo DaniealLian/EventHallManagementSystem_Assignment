@@ -36,7 +36,7 @@ class Admin extends Authenticatable
             'last_login_at' => 'datetime',
             'is_super_admin' => 'boolean',
             'is_active' => 'boolean',
-            'permissions' => 'array', // Store as JSON
+            'permissions' => 'array',
         ];
     }
 
@@ -75,7 +75,6 @@ class Admin extends Authenticatable
         $this->update(['permissions' => array_values($permissions)]);
     }
 
-    // ADMIN CAPABILITIES
     public function canManageUsers(): bool
     {
         return $this->hasPermission('manage_users') || $this->isSuperAdmin();
@@ -111,7 +110,6 @@ class Admin extends Authenticatable
         return $query->where('is_super_admin', true);
     }
 
-    // ACCESSORS
     public function getFormattedPermissionsAttribute()
     {
         return collect($this->permissions ?? [])->map(function ($permission) {
