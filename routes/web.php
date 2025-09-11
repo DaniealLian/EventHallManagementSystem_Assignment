@@ -86,3 +86,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 if (file_exists(__DIR__ . '/auth.php')) {
     require __DIR__ . '/auth.php';
 }
+
+//Reservation Route
+Route::get('/reservations/{event}', [ReservationController::class, 'index'])->name('reservations.index');
+Route::post('/reservations/{event}', [ReservationController::class, 'store'])->name('reservations.store');

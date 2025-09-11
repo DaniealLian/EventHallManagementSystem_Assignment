@@ -3,36 +3,29 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 
 class Reservation extends Model
 {
-    use HasFactory;
+    //which stuff can be mass filled in the database for security
+    protected $fillable =['event_id', 'reserved_date_time', 'total_price', 'session_duration'];
 
-    protected $fillable = [
-        'event_id',
-        'user_id',
-        'seat_type_id',
-        'quantity',
-        'total_price',
-        'status',
+    //convert reservation Date value into php type when accessing it
+    protected $casts =[
+        'reserved_date_time' => 'datetime',
+        'session_duration' => 'datetime',
     ];
+    //this reservation has many reservationItem
+    public function reservationItems(): HasMany
+    {
+        return $this->hasMany(ReservationItem::class);
+    }
 
-    /**
-     * Relationships
-     */
-    public function event()
+     public function event():BelongsTo
     {
         return $this->belongsTo(Event::class);
     }
 
-    public function seatType()
-    {
-        return $this->belongsTo(SeatType::class);
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 }

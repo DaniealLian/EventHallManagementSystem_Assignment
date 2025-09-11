@@ -2,56 +2,84 @@
 
 namespace App\Http\Controllers;
 
+use App\BuilderPattern\ReservationBuilder;
 use App\Models\Event;
-use App\Models\SeatType;
-use App\Builders\ConcreteReservationBuilder;
+use App\Models\Reservation;
+use App\Models\PricingTier;
+use App\Models\ReservationItem;
 use Illuminate\Http\Request;
 
 class ReservationController extends Controller
 {
-    /**
-     * Store a new reservation
-     */
-    public function store(Request $request, $eventId)
+
+    public function index(Event $event)
     {
-        // ✅ Validate input
+        $event->load('pricingTiers');
+        return view('reservations.index', compact('event'));
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request, Event $event)
+    {
+
         $request->validate([
-            'seat_type_id' => 'required|exists:seat_types,id',
-            'quantity' => 'required|integer|min:1',
+        'reserved_date_time' => 'required|date',
         ]);
+        
+        $builder = new ReservationBuilder($event);
 
-        $event = Event::findOrFail($eventId);
-        $seatType = SeatType::findOrFail($request->seat_type_id);
+        $reservationDate = new \DateTime($request->reserved_date_time);
 
-        try {
-            $builder = new ConcreteReservationBuilder();
+        $reservation = $builder->addReservation($reservationDate);
 
-            $reservation = $builder
-                ->setEvent($event)
-                ->setSeatType($seatType)
-                ->setQuantity($request->quantity)
-                ->setUser(auth()->id())
-                ->calculateTotal()
-                ->build();
-
-            // ✅ Redirect to Payment Checkout page with reservation id
-            return redirect()->route('payments.checkout', ['reservation' => $reservation->id])
-                ->with('success', 'Reservation created. Proceed to payment.');
-        } catch (\Exception $e) {
-            return back()->with('error', $e->getMessage());
+        foreach ($request->tiers as $tierId => $quantity) {
+            if ($quantity > 0) {
+                $builder->addItem($tierId, $quantity);
+            }
         }
+
+        $reservation = $builder->save();
+
+        return redirect()->route('events.index')->with('success', 'Reservation created!');
+    }
+    /**
+     * Display the specified resource.
+     */
+    public function show(reservation $reservation)
+    {
+        //
     }
 
     /**
-     * Show checkout form for a specific event
+     * Show the form for editing the specified resource.
      */
-    public function checkout($eventId)
+    public function edit(reservation $reservation)
     {
-        $event = Event::findOrFail($eventId);
-
-        // ✅ Ensure Event model has relation: public function seatTypes()
-        $seatTypes = $event->seatTypes;
-
-        return view('reservations.checkout', compact('event', 'seatTypes'));
+        //
     }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, reservation $reservation)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($reservationID)
+    {
+        //
+        $reservation = Reservation::findOrFail($reservationID);
+        $reservation->delete();
+
+        return redirect()->route('reservation.index')->with('removed reservation record');
+    }
+
+
 }
