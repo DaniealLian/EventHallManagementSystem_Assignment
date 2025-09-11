@@ -53,39 +53,39 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-$key = $this->throttleKey($request);
-        if (RateLimiter::tooManyAttempts($key, 5)) {
-            $seconds = RateLimiter::availableIn($key);
-            $minutes = ceil($seconds / 60);
+    $key = $this->throttleKey($request);
+            if (RateLimiter::tooManyAttempts($key, 5)) {
+                $seconds = RateLimiter::availableIn($key);
+                $minutes = ceil($seconds / 60);
 
-            return back()->withErrors([
-                'email' => "Too many login attempts. Please try again in {$minutes} minute(s)."
-            ])->withInput($request->only('email'));
-        }
+                return back()->withErrors([
+                    'email' => "Too many login attempts. Please try again in {$minutes} minute(s)."
+                ])->withInput($request->only('email'));
+            }
 
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email',
+                'password' => 'required',
+            ]);
 
-        if($validator->fails()){
-            return back()->withErrors($validator);
-        }
+            if($validator->fails()){
+                return back()->withErrors($validator);
+            }
 
-        $user = $this->userService->login($request->only('email', 'password'));
+            $user = $this->userService->login($request->only('email', 'password'));
 
-        if($user){
-            // Clear the rate limiter on successful login
-            RateLimiter::clear($key);
+            if($user){
+                // Clear the rate limiter on successful login
+                RateLimiter::clear($key);
 
-            $request->session()->regenerate();
-            return redirect()->intended('dashboard');
-        }
+                $request->session()->regenerate();
+                return redirect()->intended('dashboard');
+            }
 
-        // Increment failed attempts
-        RateLimiter::hit($key, 15 * 60); // 15 minutes
+            // Increment failed attempts
+            RateLimiter::hit($key, 15 * 60); // 15 minutes
 
-        return back()->withErrors(['email' => 'Invalid credentials']);
+            return back()->withErrors(['email' => 'Invalid credentials']);
 
     }
 
