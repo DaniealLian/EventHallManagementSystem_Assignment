@@ -1,82 +1,64 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
+use App\Models\Payment;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use App\Services\Payments\PaymentContext;
-use App\Services\Payments\CardPayment;
-use App\Services\Payments\EWalletPayment;
-use App\Services\Payments\OnlineBankingPayment;
-use App\Models\Transaction;
+use App\Strategies\PaymentContext;
+use App\Strategies\CardPayment;
+use App\Strategies\OnlineBankingPayment;
+use App\Strategies\EWalletPayment;
 
 class PaymentController extends Controller
 {
-    /**
-     * Show payment method selection page
-     */
-    public function showPayment()
+    public function process(Request $request)
     {
-        return view('payment.paymentPage');
-    }
-
-    /**
-     * Show checkout form for chosen method
-     */
-    public function checkoutForm(Request $request)
-    {
-        $method = $request->input('method');
-        return view('payment.checkout', compact('method'));
-    }
-
-    /**
-     * Process the payment
-     */
-    public function checkout(Request $request)
-    {
-        $method = $request->input('method'); // card, ewallet, onlinebanking
-        $amount = $request->input('amount');
-        $details = $request->all();
-
-        $context = new PaymentContext();
-
-        // Select strategy based on user choice
-        switch ($method) {
-            case 'card':
-                $context->setStrategy(new CardPayment());
-                break;
-            case 'ewallet':
-                $context->setStrategy(new EWalletPayment());
-                break;
-            case 'onlinebanking':
-                $context->setStrategy(new OnlineBankingPayment());
-                break;
-            default:
-                return back()->with('error', 'Invalid payment method selected.');
-        }
-
-        // Execute payment
-        $result = $context->pay($amount, $details);
-
-        // Save transaction in database
-        $transaction = Transaction::create([
-            'user_id' => auth()->id(),
-            'event_id' => $request->input('event_id'),
-            'amount' => $amount,
-            'method' => $method,
-            'status' => str_contains($result, '✅') ? 'paid' : 'failed',
+        // ✅ 1. Validate input
+        $validated = $request->validate([
+            'reservation_id' => 'required|exists:reservations,id',
+            'amount' => 'required|numeric|min:1',
+            'method' => 'required|in:credit_card,debit_card,paypal',
         ]);
 
-        return view('payment.status', compact('result', 'transaction'));
-    }
+        // ✅ 2. Find reservation
+        $reservation = Reservation::findOrFail($validated['reservation_id']);
 
-    /**
-     * Show transaction status
-     */
-    public function status($id)
-    {
-        $transaction = Transaction::findOrFail($id);
-        return view('payment.status', compact('transaction'));
+        // ✅ 3. Pick strategy based on method
+        $strategy = match ($validated['method']) {
+            'credit_card' => new CardPayment(),
+            'debit_card'  => new CardPayment(), // you can differentiate later if needed
+            'paypal'      => new EWalletPayment(),
+            default       => throw new \Exception("Unsupported payment method"),
+        };
+
+        // ✅ 4. Process payment using Strategy Pattern
+        $paymentContext = new PaymentContext($strategy);
+        $status = $paymentContext->pay($reservation, $validated['amount']); 
+        // status will be "success", "pending", or "failed"
+
+        // ✅ 5. Save record
+        $payment = Payment::create([
+            'reservation_id' => $reservation->id,
+            'amount' => $validated['amount'],
+            'method' => $validated['method'],
+            'status' => $status,
+            'transaction_id' => uniqid("txn_"), // just a sample transaction ID
+        ]);
+
+        // ✅ 6. Handle status and redirect with proper messages
+        return match ($status) {
+            'success' => redirect()->route('payments.status')
+                                   ->with('success', 'Payment completed successfully! Transaction ID: ' . $payment->transaction_id),
+
+            'pending' => redirect()->route('payments.status')
+                                   ->with('info', 'Payment is pending confirmation. Please check later.'),
+
+            'failed'  => redirect()->route('payments.status')
+                                   ->with('error', 'Payment failed. Please try again.'),
+
+            default   => redirect()->route('payments.status')
+                                   ->with('error', 'Unexpected payment status.')
+        };
     }
 }

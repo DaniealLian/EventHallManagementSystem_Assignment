@@ -10,16 +10,23 @@
             Welcome to Event Hall Management
         </h1>
         <p class="lead">Book your perfect venue for any occasion</p>
+
         @guest
             <a class="btn btn-light btn-lg me-2" href="{{ route('register') }}">
                 <i class="fas fa-user-plus"></i> Get Started
             </a>
-            <a class="btn btn-outline-light btn-lg" href="{{ route('login') }}">
+            <a class="btn btn-outline-light btn-lg me-2" href="{{ route('login') }}">
                 <i class="fas fa-sign-in-alt"></i> Login
             </a>
+            <a class="btn btn-success btn-lg" href="{{ route('events.public') }}">
+                <i class="fas fa-calendar"></i> View Events
+            </a>
         @else
-            <a class="btn btn-light btn-lg" href="{{ route('dashboard') }}">
+            <a class="btn btn-light btn-lg me-2" href="{{ route('dashboard') }}">
                 <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+            </a>
+            <a class="btn btn-success btn-lg" href="{{ route('events.public') }}">
+                <i class="fas fa-calendar-check"></i> Book Now
             </a>
         @endguest
     </div>
@@ -42,6 +49,7 @@
                 <i class="fas fa-calendar-check fa-3x text-success mb-3"></i>
                 <h5 class="card-title">Easy Booking</h5>
                 <p class="card-text">Simple and secure booking process with instant confirmation.</p>
+                <a href="{{ route('events.public') }}" class="btn btn-outline-success btn-sm">Start Booking</a>
             </div>
         </div>
     </div>
@@ -56,5 +64,4 @@
         </div>
     </div>
 </div>
-
 @endsection
