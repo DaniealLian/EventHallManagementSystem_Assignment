@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\VenueController;
 
 // Default homepage → redirect to payment selection
 Route::get('/', function () {
@@ -54,6 +55,8 @@ Route::middleware('auth')->group(function(){
     Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
     Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
     Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
+
+    Route::resource('venues', VenueController::class);
 });
 
 // Admin stuff

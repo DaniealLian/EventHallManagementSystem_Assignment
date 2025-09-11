@@ -7,6 +7,7 @@ use App\Contracts\UserFactoryInterface;
 use App\Contracts\AdminFactoryInterface;
 use App\Factories\UserFactory;
 use App\Factories\AdminFactory;
+use App\Services\VenueService; 
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +21,10 @@ class AppServiceProvider extends ServiceProvider
 
         // Admin factory binding (for admin panel)
         $this->app->bind(AdminFactoryInterface::class, AdminFactory::class);
+    
+        $this->app->singleton('venueService', function ($app) {
+        return new VenueService();
+    });
     }
 
     /**
