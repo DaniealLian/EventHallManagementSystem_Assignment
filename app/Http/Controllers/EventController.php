@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
-use App\Services\EventServiceInterface;
+use App\Contracts\EventServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
