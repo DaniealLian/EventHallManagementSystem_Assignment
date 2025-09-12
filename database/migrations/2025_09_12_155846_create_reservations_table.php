@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('event_id')->constrained()->onDelete('cascade');
             $table->decimal('total_price', 8, 2) -> default(0);
             $table->dateTime('reserved_date_time');
-            $table->dateTime('session_duration')->nullable();
             
             $table->timestamps();
         });
@@ -41,7 +40,6 @@ return new class extends Migration
             
             $table->timestamps();
         });
-
     }
 
     /**
@@ -49,8 +47,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('reservations');
         Schema::dropIfExists('reservation_items');
         Schema::dropIfExists('pricing_tiers');
-        Schema::dropIfExists('reservations');
     }
 };

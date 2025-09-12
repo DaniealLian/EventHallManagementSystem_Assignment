@@ -18,14 +18,14 @@
             <a class="btn btn-outline-light btn-lg me-2" href="{{ route('login') }}">
                 <i class="fas fa-sign-in-alt"></i> Login
             </a>
-            <a class="btn btn-success btn-lg" href="{{ route('events.public') }}">
+            <a class="btn btn-success btn-lg" href="{{ route('events.index') }}">
                 <i class="fas fa-calendar"></i> View Events
             </a>
         @else
             <a class="btn btn-light btn-lg me-2" href="{{ route('dashboard') }}">
                 <i class="fas fa-tachometer-alt"></i> Go to Dashboard
             </a>
-            <a class="btn btn-success btn-lg" href="{{ route('events.public') }}">
+            <a class="btn btn-success btn-lg" href="{{ route('events.index') }}">
                 <i class="fas fa-calendar-check"></i> Book Now
             </a>
         @endguest
@@ -49,7 +49,7 @@
                 <i class="fas fa-calendar-check fa-3x text-success mb-3"></i>
                 <h5 class="card-title">Easy Booking</h5>
                 <p class="card-text">Simple and secure booking process with instant confirmation.</p>
-                <a href="{{ route('events.public') }}" class="btn btn-outline-success btn-sm">Start Booking</a>
+                <a href="{{ route('reservations.index') }}" class="btn btn-outline-success btn-sm">Start Booking</a>
             </div>
         </div>
     </div>

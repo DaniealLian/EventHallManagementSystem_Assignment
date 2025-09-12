@@ -23,8 +23,11 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register', [AuthController::class, 'register']);
 
 // ====================== EVENTS ======================
-Route::resource('events', EventController::class);
-Route::get('/events/index', [EventController::class, 'index'])->name('events.public');
+Route::prefix('events')->name('events.')->group(function () {
+    Route::get('/events/index', [EventController::class, 'index'])->name('index');
+    Route::get('/events/edit', [EventController::class, 'edit'])->name('edit');
+    Route::get('/events/create', [EventController::class, 'create'])->name('create');
+    Route::post('/events/create/', [EventController::class, 'store'])->name('store');});
 
 // ====================== PROTECTED (USER) ======================
 Route::middleware('auth')->group(function () {
@@ -40,11 +43,6 @@ Route::middleware('auth')->group(function () {
     // Apply Manager
     Route::get('/apply-manager', [UserController::class, 'showManagerApplication'])->name('manager.apply');
     Route::post('/apply-manager', [UserController::class, 'submitManagerApplication'])->name('manager.submit');
-
-    // ====================== RESERVATIONS ======================
-    Route::get('/events/{event}/reserve', [ReservationController::class, 'checkout'])->name('reservations.checkout');
-    Route::post('/events/{event}/reserve', [ReservationController::class, 'store'])->name('reservations.store');
-    Route::get('/events/{event}/reserve', [ReservationController::class, 'checkout'])->name('reservations.checkout');
 
     // ====================== PAYMENTS ======================
     Route::get('/payments/checkout/{reservation}', [PaymentController::class, 'checkout'])->name('payments.checkout');
@@ -82,11 +80,20 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 });
 
+//====================== Reservation ==========================
+Route::prefix('reservations')->name('reservations.')->group(function () {
+    Route::get('/', [ReservationController::class, 'index'])->name('index');
+    Route::post('/', [ReservationController::class, 'store'])->name('store');
+    
+    // Session token with finalize page
+    Route::get('/finalize/{token}', [ReservationController::class, 'finalize'])->name('finalize');
+    // Confirm and save the reservation permanently
+    Route::post('/confirm/{token}', [ReservationController::class, 'confirmReservation'])->name('confirm');
+});
+
+
+
 // ====================== EXTRA ======================
 if (file_exists(__DIR__ . '/auth.php')) {
     require __DIR__ . '/auth.php';
 }
-
-//Reservation Route
-Route::get('/reservations/{event}', [ReservationController::class, 'index'])->name('reservations.index');
-Route::post('/reservations/{event}', [ReservationController::class, 'store'])->name('reservations.store');

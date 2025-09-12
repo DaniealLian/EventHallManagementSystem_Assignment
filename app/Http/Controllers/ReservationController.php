@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ReservationSessionService;
 use App\BuilderPattern\ReservationBuilder;
 use App\Models\Event;
 use App\Models\Reservation;
@@ -11,6 +12,12 @@ use Illuminate\Http\Request;
 
 class ReservationController extends Controller
 {
+    protected $sessionService;
+
+    public function __construct(ReservationSessionService $sessionService)
+    {
+        $this->sessionService = $sessionService;
+    }
 
     public function index(Event $event)
     {
@@ -18,6 +25,13 @@ class ReservationController extends Controller
         return view('reservations.index', compact('event'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+    
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -26,39 +40,77 @@ class ReservationController extends Controller
     {
 
         $request->validate([
-        'reserved_date_time' => 'required|date',
+        'reserved_date_time' => 'required|date|after:now',
+        'tiers' => 'required|array',
+        'tiers.*' => 'integer|min:0',
         ]);
         
-        $builder = new ReservationBuilder($event);
+        try{
+            $builder = new ReservationBuilder($event, $this->sessionService);
+            $reservationDate = new \DateTime($request->reserved_date_time);
+            $builder->addReservation($reservationDate);
 
-        $reservationDate = new \DateTime($request->reserved_date_time);
-
-        $reservation = $builder->addReservation($reservationDate);
-
-        foreach ($request->tiers as $tierId => $quantity) {
-            if ($quantity > 0) {
-                $builder->addItem($tierId, $quantity);
+            foreach ($request->tiers as $tierId => $quantity) {
+                if ($quantity > 0) {
+                    $builder->addItem($tierId, $quantity);
+                }
             }
+
+            $token =  $builder->getSessionToken();
+
+            return redirect()
+                ->route('reservations.finalize', ['event' => $event, 'token' => $token])
+                ->with('success', 'Please finalize and confirm your reservation. :D');
+
+        }catch(\Exception $e){
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+
         }
 
-        $reservation = $builder->save();
-
-        return redirect()->route('events.index')->with('success', 'Reservation created!');
     }
-    /**
-     * Display the specified resource.
-     */
-    public function show(reservation $reservation)
+  
+
+
+    public function finalize(Event $event, string $token)
     {
-        //
+        $builder = ReservationBuilder::fromSession($token, $event, $this->sessionService);
+
+         if (!$builder) {
+            return redirect()
+                ->route('reservations.index', $event)
+                ->with('error', 'Reservation session expired. Please start over.');
+        }
+
+        $reservation_session = $builder->getReservationData();
+        $sessionData = $this->sessionService->getSession($token);
+
+        return view('reservations.finalize', compact('event', 'reservation_session', 'sessionData', 'token'));
+
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(reservation $reservation)
+    public function confirmReservation(Request $request, Event $event, string $token)
     {
-        //
+        try {
+            
+            $builder = ReservationBuilder::fromSession($token, $event, $this->sessionService);
+            
+            if (!$builder) {
+                throw new \Exception('Reservation session expired. Please start over.');
+            }
+
+            $reservation = $builder->save(); 
+            
+            return redirect()
+                ->route('events.index')
+                ->with('success', 'Reservation confirmed successfully!');
+                
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('reservations.index', $event)
+                ->with('error', $e->getMessage());
+        }
     }
 
     /**

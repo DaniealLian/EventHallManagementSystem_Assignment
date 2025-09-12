@@ -19,11 +19,7 @@ return new class extends Migration
             $table->dateTime('end_time');
 
             // Organizer is a user (manager or admin)
-            $table->unsignedBigInteger('organizer_id');
-            $table->foreign('organizer_id')
-                  ->references('id')
-                  ->on('users')
-                  ->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
 
             $table->timestamps();
         });

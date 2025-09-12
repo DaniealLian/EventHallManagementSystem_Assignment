@@ -54,7 +54,10 @@ class EventController extends Controller
                 'start_time'   => 'required|date',
                 'end_time'     => 'required|date|after:start_time',
                 'secret_notes' => 'nullable|string|max:500',
+                
             ]);
+
+            $validated['user_id'] = auth()->id();
 
             // The SecureProxyEventService will handle setting user_id and encryption
             $this->eventService->createEvent($validated);
