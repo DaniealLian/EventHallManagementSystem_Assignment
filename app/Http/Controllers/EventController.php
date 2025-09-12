@@ -30,21 +30,19 @@ class EventController extends Controller
         return view('events.index', compact('events'));
     }
 
-    
+    /**
+     * Show form to create new event
+     */
     public function create()
     {
         return view('events.create');
     }
 
-    
+    /**
+     * Store a new event
+     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
-        ]);
         try {
             $validated = $request->validate([
                 'title'        => 'required|string|max:255',
@@ -72,7 +70,9 @@ class EventController extends Controller
         }
     }
 
-    
+    /**
+     * Show edit form
+     */
     public function edit(Event $event)
     {
         $this->authorize('update', $event);
@@ -80,17 +80,13 @@ class EventController extends Controller
         return view('events.edit', compact('event'));
     }
 
-    
+    /**
+     * Update an event
+     */
     public function update(Request $request, Event $event)
     {
         $this->authorize('update', $event);
 
-        $validated = $request->validate([
-            'title' => 'string|max:255',
-            'description' => 'nullable|string',
-            'start_time' => 'date',
-            'end_time' => 'date|after:start_time',
-        ]);
         try {
             $validated = $request->validate([
                 'title'        => 'string|max:255',
@@ -116,7 +112,9 @@ class EventController extends Controller
         }
     }
 
-    
+    /**
+     * Delete an event
+     */
     public function destroy(Event $event)
     {
         $this->authorize('delete', $event);
@@ -129,11 +127,5 @@ class EventController extends Controller
             Log::error('Event deletion failed', ['error' => $e->getMessage()]);
             return back()->with('error', 'An error occurred while deleting the event.');
         }
-    }
-
-    public function publicIndex()
-    {
-        $events = Event::with('organizer')->get();
-        return view('events.public_index', compact('events'));
     }
 }
