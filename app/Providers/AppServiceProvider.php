@@ -8,7 +8,7 @@ use App\Contracts\AdminFactoryInterface;
 use App\Factories\UserFactory;
 use App\Factories\AdminFactory;
 use App\Services\VenueService;
-use App\Contracts\EventServiceInterface;
+use App\Services\EventServiceInterface;
 use App\Services\SecureProxyEventService;
 use App\Services\EventService;
 
@@ -27,7 +27,8 @@ class AppServiceProvider extends ServiceProvider
     
         $this->app->singleton('venueService', function ($app) {
         return new VenueService();
-
+        
+        });
         $this->app->bind(EventServiceInterface::class, function($app){
             return new SecureProxyEventService(
                 $app->make(EventService::class)
@@ -36,12 +37,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(\App\Services\EventService::class);
     
-        $this->app->bind(\App\Contracts\EventServiceInterface::class, function ($app) {
-            return new \App\Services\SecureProxyEventService(
-                $app->make(\App\Services\EventService::class)
-            );
-        });
-    });
+        $this->app->bind(EventServiceInterface::class, SecureProxyEventService::class);
 
     
     }

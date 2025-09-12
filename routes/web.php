@@ -24,7 +24,7 @@ Route::post('/register', [AuthController::class, 'register']);
 
 // ====================== EVENTS ======================
 Route::resource('events', EventController::class);
-Route::get('/events/index', [EventController::class, 'publicIndex'])->name('events.public');
+Route::get('/events/index', [EventController::class, 'index'])->name('events.public');
 
 // ====================== PROTECTED (USER) ======================
 Route::middleware('auth')->group(function () {

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
-use App\Contracts\EventServiceInterface;
+use App\Services\EventServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -36,15 +36,17 @@ class EventController extends Controller
         return view('events.create');
     }
 
+    /**
+     * Display the specified event
+     */
+    public function show(Event $event)
+    {
+        return view('events.show', compact('event'));
+    }
+
     
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
-        ]);
         try {
             $validated = $request->validate([
                 'title'        => 'required|string|max:255',
@@ -54,12 +56,7 @@ class EventController extends Controller
                 'secret_notes' => 'nullable|string|max:500',
             ]);
 
-            $validated['organizer_id'] = Auth::id();
-
-            if (!empty($validated['secret_notes'])) {
-                $validated['secret_notes'] = Crypt::encryptString($validated['secret_notes']);
-            }
-
+            // The SecureProxyEventService will handle setting user_id and encryption
             $this->eventService->createEvent($validated);
 
             return redirect()->route('events.index')->with('success', 'Event created successfully!');
@@ -85,12 +82,6 @@ class EventController extends Controller
     {
         $this->authorize('update', $event);
 
-        $validated = $request->validate([
-            'title' => 'string|max:255',
-            'description' => 'nullable|string',
-            'start_time' => 'date',
-            'end_time' => 'date|after:start_time',
-        ]);
         try {
             $validated = $request->validate([
                 'title'        => 'string|max:255',
@@ -100,10 +91,7 @@ class EventController extends Controller
                 'secret_notes' => 'nullable|string|max:500',
             ]);
 
-            if (!empty($validated['secret_notes'])) {
-                $validated['secret_notes'] = Crypt::encryptString($validated['secret_notes']);
-            }
-
+            // The SecureProxyEventService will handle authorization and encryption
             $this->eventService->updateEvent($event, $validated);
 
             return redirect()->route('events.index')->with('success', 'Event updated successfully!');

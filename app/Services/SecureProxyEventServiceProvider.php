@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Contracts\EventServiceInterface;
+use App\Services\EventServiceInterface;
 use App\Services\EventService;
 use App\Services\SecureProxyEventService;
 
