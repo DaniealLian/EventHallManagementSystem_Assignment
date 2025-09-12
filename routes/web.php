@@ -38,8 +38,11 @@ Route::middleware('auth')->group(function () {
     Route::put('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
 
     // Apply Manager
-    Route::get('/apply-manager', [UserController::class, 'showManagerApplication'])->name('manager.apply');
-    Route::post('/apply-manager', [UserController::class, 'submitManagerApplication'])->name('manager.submit');
+    Route::middleware(['auth', 'permission:apply_for_manager'])->group(function(){
+        Route::get('/apply-manager', [UserController::class, 'showManagerApplication'])->name('manager.apply');
+        Route::post('/apply-manager', [UserController::class, 'submitManagerApplication'])->name('manager.submit');
+    });
+
 
     // ====================== RESERVATIONS ======================
     Route::get('/events/{event}/reserve', [ReservationController::class, 'checkout'])->name('reservations.checkout');
