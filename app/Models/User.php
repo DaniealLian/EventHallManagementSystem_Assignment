@@ -53,9 +53,10 @@ class User extends Authenticatable
 
     public function hasPermission(string $permission): bool
     {
-        $permissions = $this->getPermissions();
-        return in_array('*', $permissions) || in_array($permission, $permissions);
+        $userService = app(\App\Services\UserService::class);
+        return $userService->canUserPerform($this, $permission);
     }
+
 
     public function isCustomer(): bool
     {

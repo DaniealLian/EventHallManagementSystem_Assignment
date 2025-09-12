@@ -74,7 +74,6 @@
                         <i class="fas fa-check-circle fa-3x"></i>
                     </div>
                 </div>
-                <a href="{{ route('paymentPage') }}" class="btn btn-light btn-sm mt-2">Make payment(test)</a>
             </div>
         </div>
     </div>

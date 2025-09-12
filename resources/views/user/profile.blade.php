@@ -85,8 +85,8 @@
                 @if($user->isCustomer())
                     <hr>
                     <h6>Want to become an Event Manager?</h6>
-                    
-                    @if($user->canApplyForManager())
+
+                    @if(auth()->user()->hasPermission('apply_for_manager'))
                         <p class="text-muted small">Apply to manage event halls and help customers with their bookings.</p>
                         <a href="{{ route('manager.apply') }}" class="btn btn-success btn-sm">
                             <i class="fas fa-briefcase"></i> Apply for Manager Role

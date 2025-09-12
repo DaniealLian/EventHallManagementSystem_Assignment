@@ -30,12 +30,14 @@ class UserController extends Controller
             'phone_number' => 'nullable|string|max:20|regex:/^([0-9\s\-\+\(\)]*)$/',
         ]);
 
-        if($validator->fails()){
+        if($validator->fails())
+            {
             return back()->withErrors($validator)->withInput();
         }
 
         $data = $request->only(['name', 'email', 'phone_number']);
-        if($request->password){
+        if($request->password)
+            {
             $data['password'] = $request->password;
         }
 
@@ -47,8 +49,14 @@ class UserController extends Controller
     public function showManagerApplication(){
         $user = auth()->user();
 
-        if(!$user->canApplyForManager() && !$user->hasManagerApplicationPending()){
+        if(!$user->hasPermission('apply_for_manager'))
+            {
             return redirect()->route('profile')->with('error', 'You cannot apply for manager role at this time. ');
+        }
+
+        if($user->hasManagerApplicationPending())
+            {
+            return redirect()->route('profile')->with('error','You already have a pending application.');
         }
 
         return view('auth.eventMngRegister',['user'=>$user]);
@@ -58,7 +66,13 @@ class UserController extends Controller
     {
         $user = auth()->user();
 
-        if (!$user->canApplyForManager()) {
+        if(!$user->hasPermission('apply_for_manager'))
+        {
+            abort(403, 'You have insufficient permission/authority to do this action');
+        }
+
+        if (!$user->canApplyForManager())
+            {
             return redirect()->route('profile')->with('error', 'You cannot apply for manager role at this time.');
         }
 
@@ -69,7 +83,8 @@ class UserController extends Controller
             'experience' => 'nullable|string|max:2000',
         ]);
 
-        if ($validator->fails()) {
+        if ($validator->fails())
+            {
             return back()->withErrors($validator)->withInput();
         }
 
@@ -80,7 +95,7 @@ class UserController extends Controller
 
     public function managerApplication(){
         if(!auth()->user()->isAdmin()){
-            abort(403);;
+            abort(403, 'You have insufficient permission/authority to do this action');
         }
 
         $applications = \App\Models\User::where('manager_status', 'pending')
