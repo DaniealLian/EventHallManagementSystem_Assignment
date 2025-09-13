@@ -27,7 +27,7 @@ class SecureProxyEventService implements EventServiceInterface
             $userId = Auth::id();
 
             // Enforce ownership → organizer_id is always the current user
-            $data['organizer_id'] = $userId;
+            $data['user_id'] = $userId;
 
             // Encrypt sensitive notes
             if (!empty($data['secret_notes'])) {
@@ -66,10 +66,11 @@ class SecureProxyEventService implements EventServiceInterface
             $userId = Auth::id();
 
             // Authorization check → only organizer or admin can update
-            if ($event->organizer_id !== $userId && Auth::user()->role !== 'admin') {
+            if ($event->user_id !== $userId && !$this->isAdmin()) {
                 Log::warning("Unauthorized update attempt", [
                     'user_id' => $userId,
-                    'event_id' => $event->id
+                    'event_id' => $event->id,
+                    'event_owner' => $event->user_id
                 ]);
                 throw new AuthorizationException("You are not authorized to update this event.");
             }
@@ -78,6 +79,10 @@ class SecureProxyEventService implements EventServiceInterface
             if (!empty($data['secret_notes'])) {
                 $data['secret_notes'] = Crypt::encryptString($data['secret_notes']);
             }
+            
+
+            unset($data['user_id']);
+
 
             $updatedEvent = $this->eventService->updateEvent($event, $data);
 
@@ -106,7 +111,7 @@ class SecureProxyEventService implements EventServiceInterface
             $userId = Auth::id();
 
             // Authorization check
-            if ($event->organizer_id !== $userId && Auth::user()->role !== 'admin') {
+            if ($event->user_id !== $userId && Auth::user()->role !== 'admin') {
                 Log::warning("Unauthorized delete attempt", [
                     'user_id' => $userId,
                     'event_id' => $event->id

@@ -49,7 +49,7 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        $event->load(['organizer', 'venue']);
+        $event->load(['organizer']);
         return view('events.show', compact('event'));
     }
 
@@ -98,27 +98,32 @@ class EventController extends Controller
 
     public function edit(Event $event)
     {
-        if (!Auth::guard('admin')->check()) {
-            $this->authorize('update', $event);
-        }
+        $event->load(['pricingTiers']);
+        
+        // Optional: Check authorization before showing edit form
+        //$this->authorize('update', $event);
+        
         return view('events.edit', compact('event'));
     }
 
 
     public function update(Request $request, Event $event)
     {
-        if (!Auth::guard('admin')->check()) {
-            $this->authorize('update', $event);
-        }
 
         try {
             $validated = $request->validate([
-                'title'        => 'string|max:255',
+                'title'        => 'required|string|max:255',
                 'description'  => 'nullable|string|max:1000',
-                'start_time'   => 'date',
-                'end_time'     => 'date|after:start_time',
+                'start_time'   => 'required|date',
+                'end_time'     => 'required|date|after:start_time',
                 'secret_notes' => 'nullable|string|max:500',
-                'venue_id'     => 'required|exists:venues,id',
+               // 'venue_id'     => 'required|exists:venues,id',
+
+                'pricing_tiers' => 'required|array|min:1',
+                'pricing_tiers.*.tier' => 'required|string|max:100',
+                'pricing_tiers.*.price' => 'required|numeric|min:1',
+                'pricing_tiers.*.available_qty' => 'required|integer|min:1',
+                'pricing_tiers.*.description' => 'nullable|string'
             ]);
 
             // The SecureProxyEventService will handle authorization and encryption

@@ -19,18 +19,19 @@ class ReservationController extends Controller
         $this->sessionService = $sessionService;
     }
 
-    public function index(Event $event)
+    public function index()
     {
-        $event->load('pricingTiers');
-        return view('reservations.index', compact('event'));
+        $events = Event::all();
+        return view('reservations.index', compact('events'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Event $event)
     {
-    
+        $event->load('pricingTiers');
+        return view('reservations.create', compact('event'));
     }
 
     /**

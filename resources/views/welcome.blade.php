@@ -25,7 +25,7 @@
             <a class="btn btn-light btn-lg me-2" href="{{ route('dashboard') }}">
                 <i class="fas fa-tachometer-alt"></i> Go to Dashboard
             </a>
-            <a class="btn btn-success btn-lg" href="{{ route('events.index') }}">
+            <a class="btn btn-success btn-lg" href="{{ route('reservations.index') }}">
                 <i class="fas fa-calendar-check"></i> Book Now
             </a>
         @endguest

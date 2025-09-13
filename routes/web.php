@@ -22,12 +22,7 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 
-// ====================== EVENTS ======================
-Route::prefix('events')->name('events.')->group(function () {
-    Route::get('/index', [EventController::class, 'index'])->name('index');
-    Route::get('/edit', [EventController::class, 'edit'])->name('edit');
-    Route::get('/create', [EventController::class, 'create'])->name('create');
-    Route::post('/create', [EventController::class, 'store'])->name('store');});
+
 
 // ====================== PROTECTED (USER) ======================
 Route::middleware('auth')->group(function () {
@@ -52,6 +47,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/payments/process', [PaymentController::class, 'process'])->name('payments.process');
     Route::get('/payments/status', [PaymentController::class, 'status'])->name('payments.status');
 
+    // ====================== EVENTS ======================
+    Route::prefix('events')->name('events.')->group(function () {
+        Route::get('/index', [EventController::class, 'index'])->name('index');
+        Route::get('/create', [EventController::class, 'create'])->name('create');
+        Route::post('/create', [EventController::class, 'store'])->name('store');
+        Route::get('/show/{event}', [EventController::class, 'show'])->name('show');
+        Route::get('/edit/{event}', [EventController::class, 'edit'])->name('edit');
+        Route::put('/edit/{event}', [EventController::class, 'update'])->name('update');
+});
+
     // Venues
     Route::resource('venues', VenueController::class);
 });
@@ -66,6 +71,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
+        // User management
+        Route::get('/users', [AdminController::class, 'users'])->name('users');
+        Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])->name('users.delete');
+        Route::post('/users/{user}/promote', [AdminController::class, 'promoteToManager'])->name('users.promote');
+        Route::post('/users/{user}/demote', [AdminController::class, 'demoteManager'])->name('users.demote');
+
         // Manager applications
         Route::get('/manager-applications', [AdminController::class, 'managerApplications'])->name('manager.applications');
         Route::post('/manager-applications/{user}/approve', [AdminController::class, 'approveApplication'])->name('manager.approve');
@@ -74,13 +85,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Admin profile
         Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
         Route::put('/profile', [AdminController::class, 'updateProfile'])->name('profile.update');
+
+        Route::get('/events/index', [EventController::class, 'index'])->name('index');
+        Route::get('/events/edit', [EventController::class, 'edit'])->name('edit');
+        Route::get('/events/create', [EventController::class, 'create'])->name('create');
+        Route::post('/events/create/', [EventController::class, 'store'])->name('store');
     });
 });
 
 //====================== Reservation ==========================
-Route::prefix('events/{event}/reservations')->name('reservations.')->group(function () {
-    Route::get('/', [ReservationController::class, 'index'])->name('index');
-    Route::post('/', [ReservationController::class, 'store'])->name('store');
+Route::prefix('reservations')->name('reservations.')->group(function () {
+    Route::get('/index', [ReservationController::class, 'index'])->name('index');
+    Route::get('/create/{event}', [ReservationController::class, 'create'])->name('create');
+    Route::post('/create', [ReservationController::class, 'store'])->name('store');
 
     // Session token with finalize page
     Route::get('/finalize/{token}', [ReservationController::class, 'finalize'])->name('finalize');
