@@ -40,6 +40,16 @@
                         <strong>Organizer:</strong>
                         <p>{{ $event->organizer->name ?? 'N/A' }}</p>
                     </div>
+
+                    <div class="mb-3">
+                        <strong>Venue:</strong>
+                        <p>
+                            {{ $event->venue->name ?? 'N/A' }}  
+                            @if(!empty($event->venue->address))
+                                <br><small class="text-muted">{{ $event->venue->address }}</small>
+                            @endif
+                        </p>
+                    </div>
                     
                     @if($event->secret_notes && (Auth::id() === $event->user_id || Auth::user()->role === 'admin'))
                         <div class="mb-3">

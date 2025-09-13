@@ -24,12 +24,12 @@ class VenueController extends Controller
             'name'        => 'required|string|max:100',
             'address'     => 'required|string',
             'capacity'    => 'required|integer|min:1|max:1000',
-            'postal_code' => 'required|stringm|min:5|max:5',
+            'postal_code' => 'required|string|min:5|max:5',
         ]);
 
         $venue = VFacade::createVenue($data);
 
-        return redirect()->route('venues.index')->with('success', 'Venue created: ' . ($venue->id ?? ''));
+        return redirect()->route('events.create', ['venue_id' => $venue->id])->with('success', 'Venue created successfully! Now create an event.');
     }
 
     public function edit($id)

@@ -28,6 +28,7 @@
             <th>Start</th>
             <th>End</th>
             <th>Organizer</th>
+            <th>Venue</th>
             <th>Secret Notes</th>
             <th>Actions</th>
         </tr>
@@ -40,11 +41,15 @@
                 <td>{{ $event->start_time }}</td>
                 <td>{{ $event->end_time }}</td>
                 <td>{{ $event->organizer->name ?? 'N/A' }}</td>
-
+                
+                <td>
+                    {{ $event->venue->name ?? 'N/A' }}  
+                    <small class="text-muted">{{ $event->venue->address ?? '' }}</small>
+                </td>
+    
                 <td>
                     {{ $event->secret_notes ? Crypt::decryptString($event->secret_notes) : '' }}
                 </td>
-
                 <td>
                     @can('update', $event)
                         <a href="{{ route('events.edit', $event) }}" class="btn btn-sm btn-warning">Edit</a>
@@ -58,7 +63,7 @@
                 </td>
             </tr>
         @empty
-            <tr><td colspan="7" class="text-center">No events found</td></tr>
+            <tr><td colspan="8" class="text-center">No events found</td></tr>
         @endforelse
     </tbody>
 </table>

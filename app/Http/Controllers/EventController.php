@@ -25,15 +25,22 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = Event::with('organizer')->get();
+        $events = Event::with('organizer', 'venue')->get();
 
         return view('events.index', compact('events'));
     }
 
     
-    public function create()
+    public function create(Request $request)
     {
-        return view('events.create');
+        $venueId = $request->get('venue_id');
+        $venue = null;
+
+        if($venueId){
+            $venue = \App\Facades\VFacade::getVenueByCode($venueId);
+        }
+
+        return view('events.create', compact('venue'));
     }
 
     /**
@@ -41,6 +48,7 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
+        $event->load(['organizer', 'venue']);
         return view('events.show', compact('event'));
     }
 
@@ -54,7 +62,7 @@ class EventController extends Controller
                 'start_time'   => 'required|date',
                 'end_time'     => 'required|date|after:start_time',
                 'secret_notes' => 'nullable|string|max:500',
-                
+                'venue_id'     => 'required|exists:venues,id',
             ]);
 
             $validated['user_id'] = auth()->id();
@@ -92,6 +100,7 @@ class EventController extends Controller
                 'start_time'   => 'date',
                 'end_time'     => 'date|after:start_time',
                 'secret_notes' => 'nullable|string|max:500',
+                'venue_id'     => 'required|exists:venues,id',
             ]);
 
             // The SecureProxyEventService will handle authorization and encryption

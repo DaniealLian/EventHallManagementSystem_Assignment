@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
+use App\Models\Event;
 
 class AdminController extends Controller
 {
@@ -88,11 +89,16 @@ class AdminController extends Controller
         $pendingApplications = User::where('manager_status', 'pending')->count();
         $recentUsers = User::latest()->take(5)->get();
 
+        $recentEvents = Event::latest()->take(5)->get();
+        $totalEvents = Event::count();
+
         return view('admin.adminDashboard', compact(
             'totalUsers',
             'totalManagers',
             'pendingApplications',
-            'recentUsers'
+            'recentUsers',
+            'recentEvents',
+            'totalEvents'
         ));
     }
 

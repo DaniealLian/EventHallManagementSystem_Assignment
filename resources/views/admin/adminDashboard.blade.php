@@ -65,4 +65,48 @@
         </div>
     </div>
 </div>
+<div class="row mt-4">
+    <div>
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Events ({{ $totalEvents }})</h5>
+                <a href="{{ route('events.index') }}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                @if($recentEvents->count() > 0)
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Date</th>
+                                    <th>Location</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($recentEvents as $event)
+                                <tr>
+                                    <td><strong>{{ $event->title }}</strong></td>
+                                    <td>{{ $event->date ? $event->date->format('M j, Y') : 'N/A' }}</td>
+                                    <td>{{ $event->location ?? 'N/A' }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ $event->status === 'active' ? 'success' : 'secondary' }}">
+                                            {{ ucfirst($event->status) }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="text-center text-muted">
+                        <p>No events created yet.</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

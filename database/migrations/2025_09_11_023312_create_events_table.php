@@ -21,6 +21,8 @@ return new class extends Migration
             // Organizer is a user (manager or admin)
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
 
+            $table->foreignId('venue_id')->nullable()->constrained()->onDelete('set null');
+
             $table->timestamps();
         });
     }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use \App\Models\Venue;
 
 class Event extends Model
 {
@@ -16,6 +17,7 @@ class Event extends Model
         'start_time',
         'end_time',
         'user_id',
+        'venue_id',
     ];
 
     public function organizer()
@@ -30,6 +32,11 @@ class Event extends Model
 
     public function pricingTiers(): HasMany{
         return $this->hasMany(PricingTier::class);
+    }
+
+    public function venue()
+    {
+        return $this->belongsTo(Venue::class);
     }
 }
 
