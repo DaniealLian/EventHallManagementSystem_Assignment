@@ -6,7 +6,7 @@
 <div class="jumbotron bg-primary text-white text-center py-5 mb-4 rounded">
     <div class="container">
         <h1 class="display-4">
-            <i class="fas fa-building"></i> 
+            <i class="fas fa-building"></i>
             Welcome to Event Hall Management
         </h1>
         <p class="lead">Book your perfect venue for any occasion</p>
@@ -42,18 +42,18 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-4">
         <div class="card h-100">
             <div class="card-body text-center">
                 <i class="fas fa-calendar-check fa-3x text-success mb-3"></i>
                 <h5 class="card-title">Easy Booking</h5>
                 <p class="card-text">Simple and secure booking process with instant confirmation.</p>
-                <a href="{{ route('events.index') }}" class="btn btn-outline-success btn-sm">Start Booking</a>
+                <a href="{{ route('reservations.index') }}" class="btn btn-outline-success btn-sm">Make Booking</a>
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-4">
         <div class="card h-100">
             <div class="card-body text-center">
