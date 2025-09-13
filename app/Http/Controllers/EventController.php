@@ -30,7 +30,7 @@ class EventController extends Controller
         return view('events.index', compact('events'));
     }
 
-    
+
     public function create(Request $request)
     {
         $venueId = $request->get('venue_id');
@@ -52,7 +52,7 @@ class EventController extends Controller
         return view('events.show', compact('event'));
     }
 
-    
+
     public function store(Request $request)
     {
         try {
@@ -65,7 +65,11 @@ class EventController extends Controller
                 'venue_id'     => 'required|exists:venues,id',
             ]);
 
-            $validated['user_id'] = auth()->id();
+            if (Auth::guard('admin')->check()) {
+                $validated['user_id'] = 1; // Or handle admin-created events differently
+            } else {
+                $validated['user_id'] = auth()->id();
+            }
 
             // The SecureProxyEventService will handle setting user_id and encryption
             $this->eventService->createEvent($validated);
@@ -80,18 +84,21 @@ class EventController extends Controller
         }
     }
 
-    
+
     public function edit(Event $event)
     {
-        $this->authorize('update', $event);
-
+        if (!Auth::guard('admin')->check()) {
+            $this->authorize('update', $event);
+        }
         return view('events.edit', compact('event'));
     }
 
-    
+
     public function update(Request $request, Event $event)
     {
-        $this->authorize('update', $event);
+        if (!Auth::guard('admin')->check()) {
+            $this->authorize('update', $event);
+        }
 
         try {
             $validated = $request->validate([
@@ -116,10 +123,12 @@ class EventController extends Controller
         }
     }
 
-    
+
     public function destroy(Event $event)
     {
-        $this->authorize('delete', $event);
+        if (!Auth::guard('admin')->check()) {
+            $this->authorize('delete', $event);
+        }
 
         try {
             $this->eventService->deleteEvent($event);

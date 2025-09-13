@@ -109,7 +109,7 @@ class AdminController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
-        return view('admin.users', compact('users'));
+        return view('admin.userMngment', compact('users'));
     }
 
     // Show manager applications
@@ -185,5 +185,7 @@ class AdminController extends Controller
 
         return back()->with('success', "Manager {$user->name} has been demoted to customer.");
     }
+
+    
 
 }

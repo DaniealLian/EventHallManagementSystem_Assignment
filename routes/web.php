@@ -80,6 +80,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Admin profile
         Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
         Route::put('/profile', [AdminController::class, 'updateProfile'])->name('profile.update');
+
+        Route::get('/events/index', [EventController::class, 'index'])->name('index');
+        Route::get('/events/edit', [EventController::class, 'edit'])->name('edit');
+        Route::get('/events/create', [EventController::class, 'create'])->name('create');
+        Route::post('/events/create/', [EventController::class, 'store'])->name('store');
     });
 });
 
@@ -87,7 +92,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::prefix('reservations')->name('reservations.')->group(function () {
     Route::get('/', [ReservationController::class, 'index'])->name('index');
     Route::post('/', [ReservationController::class, 'store'])->name('store');
-    
+
     // Session token with finalize page
     Route::get('/finalize/{token}', [ReservationController::class, 'finalize'])->name('finalize');
     // Confirm and save the reservation permanently

@@ -35,9 +35,9 @@ class EventPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Event $event): bool
+    public function update(User $user, Admin $admin, Event $event): bool
     {
-        return $user->role === 'admin'
+        return $admin->is_super_admin
             || $user->role === 'event_manager'
             || $user->id === $event->user_id;
     }
@@ -45,9 +45,9 @@ class EventPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Event $event): bool
+    public function delete(User $user, Admin $admin, Event $event): bool
     {
-        return $user->role === 'admin'
+        return $admin->is_super_admin
             || $user->role === 'event_manager';
     }
 

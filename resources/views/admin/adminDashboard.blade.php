@@ -70,7 +70,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Recent Events ({{ $totalEvents }})</h5>
-                <a href="{{ route('events.index') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                <a href="{{ route('admin.index') }}" class="btn btn-sm btn-outline-primary">View All</a>
             </div>
             <div class="card-body">
                 @if($recentEvents->count() > 0)
@@ -79,8 +79,8 @@
                             <thead>
                                 <tr>
                                     <th>Title</th>
-                                    <th>Date</th>
-                                    <th>Location</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -88,8 +88,8 @@
                                 @foreach($recentEvents as $event)
                                 <tr>
                                     <td><strong>{{ $event->title }}</strong></td>
-                                    <td>{{ $event->date ? $event->date->format('M j, Y') : 'N/A' }}</td>
-                                    <td>{{ $event->location ?? 'N/A' }}</td>
+                                    <td>{{ $event->start_time }}</td>
+                                    <td>{{ $event->end_time }}</td>
                                     <td>
                                         <span class="badge bg-{{ $event->status === 'active' ? 'success' : 'secondary' }}">
                                             {{ ucfirst($event->status) }}
