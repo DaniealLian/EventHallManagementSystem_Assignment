@@ -36,12 +36,6 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('admin.users') ? 'active' : '' }}"
-                                        href="{{ route('admin.users') }}">
-                                         User Management
-                                    </a>
-                                </li>
-                                <li class="nav-item">
                                     <a class="nav-link {{ request()->routeIs('admin.manager.applications') ? 'active' : '' }}"
                                         href="{{ route('admin.manager.applications') }}">
                                          Manager Applications

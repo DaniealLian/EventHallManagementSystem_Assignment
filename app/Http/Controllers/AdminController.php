@@ -87,30 +87,17 @@ class AdminController extends Controller
         $totalUsers = User::count();
         $totalManagers = User::where('role', 'manager')->count();
         $pendingApplications = User::where('manager_status', 'pending')->count();
-        $recentUsers = User::latest()->take(5)->get();
-
-        $recentEvents = Event::latest()->take(5)->get();
-        $totalEvents = Event::count();
+        $recentUsers = User::latest()->get();
 
         return view('admin.adminDashboard', compact(
             'totalUsers',
             'totalManagers',
             'pendingApplications',
             'recentUsers',
-            'recentEvents',
-            'totalEvents'
         ));
     }
 
-    // Show all users
-    public function users()
-    {
-        $users = User::with(['events', 'reservations'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
-
-        return view('admin.userMngment', compact('users'));
-    }
+    //User stuff in admin panel
 
     // Show manager applications
     public function managerApplications()
@@ -150,14 +137,6 @@ class AdminController extends Controller
         return back()->with('success', "Manager application for {$user->name} has been rejected.");
     }
 
-    public function deleteUser(User $user)
-    {
-        $userName = $user->name;
-        $user->delete();
-
-        return back()->with('success', "User {$userName} has been deleted successfully.");
-    }
-
     public function promoteToManager(User $user)
     {
         if ($user->role === 'manager') {
@@ -186,6 +165,5 @@ class AdminController extends Controller
         return back()->with('success', "Manager {$user->name} has been demoted to customer.");
     }
 
-    
 
 }
