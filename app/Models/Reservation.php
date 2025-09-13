@@ -10,12 +10,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Reservation extends Model
 {
     //which stuff can be mass filled in the database for security
-    protected $fillable =['event_id', 'reserved_date_time', 'total_price', 'session_duration'];
+    protected $fillable =['event_id', 'reserved_date_time', 'total_price'];
 
     //convert reservation Date value into php type when accessing it
     protected $casts =[
         'reserved_date_time' => 'datetime',
-        'session_duration' => 'datetime',
     ];
     //this reservation has many reservationItem
     public function reservationItems(): HasMany

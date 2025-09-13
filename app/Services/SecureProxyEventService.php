@@ -133,4 +133,9 @@ class SecureProxyEventService implements EventServiceInterface
             throw $e;
         }
     }
+
+    public function addPricingTiers(Event $event, array $tiers): void
+    {
+        $this->eventService->addPricingTiers($event, $tiers);
+    }
 }

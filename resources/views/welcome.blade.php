@@ -49,7 +49,7 @@
                 <i class="fas fa-calendar-check fa-3x text-success mb-3"></i>
                 <h5 class="card-title">Easy Booking</h5>
                 <p class="card-text">Simple and secure booking process with instant confirmation.</p>
-                <a href="{{ route('reservations.index') }}" class="btn btn-outline-success btn-sm">Start Booking</a>
+                <a href="{{ route('events.index') }}" class="btn btn-outline-success btn-sm">Start Booking</a>
             </div>
         </div>
     </div>

@@ -72,21 +72,21 @@
                 <div class="row">
                     <div class="col-md-6">
                         <label class="form-label">Tier Name</label>
-                        <input type="text" name="tiers[0][name]" class="form-control" placeholder="e.g., VIP, Regular, Student" required>
+                        <input type="text" name="pricing_tiers[0][tier]" class="form-control" placeholder="e.g., VIP, Regular, Student" required>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Price ($)</label>
-                        <input type="number" name="tiers[0][price]" class="form-control" step="0.01" min="0" placeholder="0.00" required>
+                        <input type="number" name="pricing_tiers[0][price]" class="form-control" step="0.01" min="0" placeholder="0.00" required>
                     </div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-6">
                         <label class="form-label">Available Seats</label>
-                        <input type="number" name="tiers[0][seats]" class="form-control" min="1" placeholder="e.g., 100">
+                        <input type="number" name="pricing_tiers[0][available_qty]" class="form-control" min="1" placeholder="e.g., 100">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Description (Optional)</label>
-                        <input type="text" name="tiers[0][description]" class="form-control" placeholder="Brief tier description">
+                        <input type="text" name="pricing_tiers[0][description]" class="form-control" placeholder="Brief tier description">
                     </div>
                 </div>
             </div>
@@ -120,7 +120,7 @@
         @error('secret_notes') <span class="text-danger">{{ $message }}</span> @enderror
     </div>
 
-    <div class="mb-3">
+    <!-- <div class="mb-3">
     <label class="form-label">Venue</label>
         <div class="d-flex">
             <select name="venue_id" class="form-control me-2" required>
@@ -136,7 +136,7 @@
                 ➕ Add Venue
             </a>
         </div>
-    </div>
+    </div> -->
 
 
     <div class="d-flex gap-2">
@@ -160,21 +160,21 @@ function addNewTier() {
         <div class="row">
             <div class="col-md-6">
                 <label class="form-label">Tier Name</label>
-                <input type="text" name="tiers[${tierIndex}][name]" class="form-control" placeholder="e.g., VIP, Regular, Student" required>
+                <input type="text" name="pricing_tiers[${tierIndex}][tier]" class="form-control" placeholder="e.g., VIP, Regular, Student" required>
             </div>
             <div class="col-md-6">
                 <label class="form-label">Price ($)</label>
-                <input type="number" name="tiers[${tierIndex}][price]" class="form-control" step="0.01" min="0" placeholder="0.00" required>
+                <input type="number" name="pricing_tiers[${tierIndex}][price]" class="form-control" step="0.01" min="0" placeholder="0.00" required>
             </div>
         </div>
         <div class="row mt-2">
             <div class="col-md-6">
                 <label class="form-label">Available Seats</label>
-                <input type="number" name="tiers[${tierIndex}][seats]" class="form-control" min="1" placeholder="e.g., 100">
+                <input type="number" name="pricing_tiers[${tierIndex}][available_qty]" class="form-control" min="1" placeholder="e.g., 100">
             </div>
             <div class="col-md-6">
                 <label class="form-label">Description (Optional)</label>
-                <input type="text" name="tiers[${tierIndex}][description]" class="form-control" placeholder="Brief tier description">
+                <input type="text" name="pricing_tiers[${tierIndex}][description]" class="form-control" placeholder="Brief tier description">
             </div>
         </div>
     `;
@@ -186,6 +186,7 @@ function addNewTier() {
 
 function removeTier(button) {
     const tierItem = button.closest('.tier-item');
+    
     tierItem.remove();
     updateTierNumbers();
 }
@@ -196,12 +197,13 @@ function updateTierNumbers() {
         const counter = tier.querySelector('.tier-counter');
         counter.textContent = `Tier ${index + 1}`;
 
-        const inputs = tier.querySelectorAll('input[name^="tiers"]');
+        const inputs = tier.querySelectorAll('input[name^="pricing_tiers"]');
         inputs.forEach(input => {
             const name = input.getAttribute('name');
-            const newName = name.replace(/tiers\[\d+\]/, `tiers[${index}]`);
-            input.setAttribute('name', newName);
+            const field = name.match(/\[(\w+)\]$/)[1];
+            input.setAttribute('name', `pricing_tiers[${index}][${field}]`);
         });
+         tier.setAttribute('data-tier-index', index);
     });
 }
 

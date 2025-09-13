@@ -25,6 +25,8 @@ return new class extends Migration
             $table->foreignId('event_id')->constrained()->onDelete('cascade');
             $table->string('tier');
             $table->decimal('price', 8, 2);
+            $table->integer('available_qty');
+            $table->text('description')->nullable();
 
             $table->timestamps();
 

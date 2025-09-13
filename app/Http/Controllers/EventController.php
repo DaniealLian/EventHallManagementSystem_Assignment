@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\PricingTier;
 use App\Services\EventServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +26,7 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = Event::with('organizer', 'venue')->get();
+        $events = Event::with('organizer', 'pricingTiers')->get();
 
         return view('events.index', compact('events'));
     }
@@ -62,7 +63,13 @@ class EventController extends Controller
                 'start_time'   => 'required|date',
                 'end_time'     => 'required|date|after:start_time',
                 'secret_notes' => 'nullable|string|max:500',
-                'venue_id'     => 'required|exists:venues,id',
+               // 'venue_id'     => 'required|exists:venues,id',
+
+                'pricing_tiers' => 'required|array|min:1',
+                'pricing_tiers.*.tier' => 'required|string|max:100',
+                'pricing_tiers.*.price' => 'required|numeric|min:1',
+                'pricing_tiers.*.available_qty' => 'required|integer|min:1',
+                'pricing_tiers.*.description' => 'nullable|string'
             ]);
 
             if (Auth::guard('admin')->check()) {
@@ -70,6 +77,10 @@ class EventController extends Controller
             } else {
                 $validated['user_id'] = auth()->id();
             }
+
+
+
+
 
             // The SecureProxyEventService will handle setting user_id and encryption
             $this->eventService->createEvent($validated);
