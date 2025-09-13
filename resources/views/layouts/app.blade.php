@@ -10,10 +10,10 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{{ route('dashboard') }}">
-                <i class="fas fa-building"></i> Event Hall Manager
+            <a class="navbar-brand" href="/">
+                Event Hall Manager
             </a>
-            
+
             <div class="navbar-nav ms-auto">
                 @auth
                     <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>

@@ -115,9 +115,6 @@
         <div class="card-body text-center py-5">
             <h4 class="text-muted">No Pending Applications</h4>
             <p class="text-muted">All manager applications have been reviewed.</p>
-            <a href="{{ route('admin.users') }}" class="btn btn-primary">
-                Manage Users
-            </a>
         </div>
     </div>
 @endif

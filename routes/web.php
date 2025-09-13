@@ -66,12 +66,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
-        // User management
-        Route::get('/users', [AdminController::class, 'users'])->name('users');
-        Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])->name('users.delete');
-        Route::post('/users/{user}/promote', [AdminController::class, 'promoteToManager'])->name('users.promote');
-        Route::post('/users/{user}/demote', [AdminController::class, 'demoteManager'])->name('users.demote');
-
         // Manager applications
         Route::get('/manager-applications', [AdminController::class, 'managerApplications'])->name('manager.applications');
         Route::post('/manager-applications/{user}/approve', [AdminController::class, 'approveApplication'])->name('manager.approve');
@@ -80,11 +74,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Admin profile
         Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
         Route::put('/profile', [AdminController::class, 'updateProfile'])->name('profile.update');
-
-        Route::get('/events/index', [EventController::class, 'index'])->name('index');
-        Route::get('/events/edit', [EventController::class, 'edit'])->name('edit');
-        Route::get('/events/create', [EventController::class, 'create'])->name('create');
-        Route::post('/events/create/', [EventController::class, 'store'])->name('store');
     });
 });
 

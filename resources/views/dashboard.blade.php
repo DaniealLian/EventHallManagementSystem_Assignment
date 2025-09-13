@@ -19,11 +19,10 @@
                         <h5 class="card-title">Event Halls</h5>
                         <h2>TODO</h2>
                     </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-building fa-3x"></i>
-                    </div>
                 </div>
-                <a href="TODO" class="btn btn-light btn-sm mt-2">View All</a>
+                <a class="btn btn-success btn-lg" href="{{ route('events.index') }}">
+                <i class="fas fa-calendar"></i> View Events
+            </a>
             </div>
         </div>
     </div>
@@ -36,28 +35,8 @@
                         <h5 class="card-title">My Bookings</h5>
                         <h2>TODO</h2>
                     </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-calendar-check fa-3x"></i>
-                    </div>
                 </div>
-                <a href="TODO" class="btn btn-light btn-sm mt-2">View All</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-    <div class="card text-white bg-info">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h5 class="card-title">Available Halls</h5>
-                        <h2>TODO</h2>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-check-circle fa-3x"></i>
-                    </div>
-                </div>
-                <a href="TODO" class="btn btn-light btn-sm mt-2">Book Now</a>
+                <a href="{{ route('reservations.index') }}" class="btn btn-success btn-lg">Start Booking</a>
             </div>
         </div>
     </div>
@@ -67,11 +46,8 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h5 class="card-title">Payment Page</h5>
+                        <h5 class="card-title">Payment Page (TESTING)</h5>
                         <h2>TODO</h2>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-check-circle fa-3x"></i>
                     </div>
                 </div>
             </div>

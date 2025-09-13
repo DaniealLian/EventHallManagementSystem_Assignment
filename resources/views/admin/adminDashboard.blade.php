@@ -14,8 +14,7 @@
         <div>
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Recent Users</h5>
-                    <a href="{{ route('admin.users') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                    <h5 class="mb-0">Users</h5>
                 </div>
                 <div class="card-body">
                     @if ($recentUsers->count() > 0)
@@ -28,7 +27,7 @@
                                         <th>Role</th>
                                         <th>Joined</th>
                                         <th>Application</th>
-                                        <th>Action</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -52,17 +51,7 @@
                                                     <span class="badge bg-success">Approved</span>
                                                 @endif
                                             </td>
-                                            <td>
-                                                
-                                                <button type="button" class="btn btn-danger flex-fill"
-                                                    onclick="promoteToManager({{ $user->id }}, '{{ $user->name }}')">
-                                                    Promote
-                                                </button>
-                                                <button type="button" class="btn btn-danger flex-fill"
-                                                    onclick="demoteManager({{ $user->id }}, '{{ $user->name }}')">
-                                                    Demote
-                                                </button>
-                                            </td>
+
                                         </tr>
                                     @endforeach
                                 </tbody>

@@ -137,33 +137,5 @@ class AdminController extends Controller
         return back()->with('success', "Manager application for {$user->name} has been rejected.");
     }
 
-    public function promoteToManager(User $user)
-    {
-        if ($user->role === 'manager') {
-            return back()->with('error', 'User is already a manager.');
-        }
-
-        $user->update([
-            'role' => 'manager',
-            'manager_status' => 'approved',
-        ]);
-
-        return back()->with('success', "User {$user->name} has been promoted to manager!");
-    }
-
-    public function demoteManager(User $user)
-    {
-        if ($user->role !== 'manager') {
-            return back()->with('error', 'User is not a manager.');
-        }
-
-        $user->update([
-            'role' => 'customer',
-            'manager_status' => 'none',
-        ]);
-
-        return back()->with('success', "Manager {$user->name} has been demoted to customer.");
-    }
-
 
 }
