@@ -13,7 +13,9 @@
 @section('content')
 <div class="d-flex justify-content-between mb-3">
     <h2>Events</h2>
-    <a href="{{ route('events.create') }}" class="btn btn-primary">+ Create Event</a>
+    @if(auth()->user()->isManager('manager') || auth()->guard('admin')->check())
+        <a href="{{ route('events.create') }}" class="btn btn-primary">+ Create Event</a>
+    @endif
 </div>
 
 @if(session('success'))
@@ -41,30 +43,37 @@
                 <td>{{ $event->start_time }}</td>
                 <td>{{ $event->end_time }}</td>
                 <td>{{ $event->organizer->name ?? 'N/A' }}</td>
-                
+
                 <td>
-                    {{ $event->venue->name ?? 'N/A' }}  
+                    {{ $event->venue->name ?? 'N/A' }}
                     <small class="text-muted">{{ $event->venue->address ?? '' }}</small>
                 </td>
-    
+
                 <td>
                     {{ $event->secret_notes ? Crypt::decryptString($event->secret_notes) : '' }}
                 </td>
                 <td>
-                    @can('update', $event)
-                        <a href="{{ route('events.edit', $event) }}" class="btn btn-sm btn-warning">Edit</a>
-                    @endcan
-                    @can('delete', $event)
-                        <form action="{{ route('events.destroy', $event) }}" method="POST" style="display:inline;">
-                            @csrf @method('DELETE')
-                            <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this event?')">Delete</button>
-                        </form>
-                    @endcan
+                    @if(auth()->user()->isManager('manager') || auth()->guard('admin')->check())
+                        @can('update', $event)
+                            <a href="{{ route('events.edit', $event) }}" class="btn btn-sm btn-warning">Edit</a>
+                        @endcan
+                        @can('delete', $event)
+                            <form action="{{ route('events.destroy', $event) }}" method="POST" style="display:inline;">
+                                @csrf @method('DELETE')
+                                <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this event?')">Delete</button>
+                            </form>
+                        @endcan
+                        <a href="#" class="btn btn-sm btn-success">Book Event</a>
+                    @else
+                        <a href="#" class="btn btn-sm btn-success">Book Event</a>
+                    @endif
                 </td>
             </tr>
         @empty
-            <tr><td colspan="8" class="text-center">No events found</td></tr>
-        @endforelse
+            <td colspan="{{ (auth()->user()->hasRole('manager') || auth()->guard('admin')->check()) ? '8' : '7' }}" class="text-center">
+                    No events found
+                </td>
+            @endforelse
     </tbody>
 </table>
 @endsection

@@ -62,15 +62,14 @@
         <div class="card">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-6">
-                        <a href="TODO" class="btn btn-success">
-                            <i class="fas fa-plus"></i> Add New Hall
-                        </a>
+                    <div class="col-md-2">
+                            <a href="{{ route('events.create') }}" class="btn btn-success btn-lg">Create Event</a>
                     </div>
-                    <div class="col-md-6">
-                        <a href="TODO" class="btn btn-primary">
-                            <i class="fas fa-cog"></i> Manage Halls
-                        </a>
+                    <div class="col-md-2">
+                            <a class="btn btn-success btn-lg" href="{{ route('events.index') }}"> Manage Events</a>
+                    </div>
+                    <div class="col-md-2">
+                            <a class="btn btn-success btn-lg" href="{{ route('events.index') }}">Create Venue TODO</a>
                     </div>
                 </div>
             </div>
