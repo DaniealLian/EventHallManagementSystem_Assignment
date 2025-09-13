@@ -24,10 +24,10 @@ Route::post('/register', [AuthController::class, 'register']);
 
 // ====================== EVENTS ======================
 Route::prefix('events')->name('events.')->group(function () {
-    Route::get('/events/index', [EventController::class, 'index'])->name('index');
-    Route::get('/events/edit', [EventController::class, 'edit'])->name('edit');
-    Route::get('/events/create', [EventController::class, 'create'])->name('create');
-    Route::post('/events/create/', [EventController::class, 'store'])->name('store');});
+    Route::get('/index', [EventController::class, 'index'])->name('index');
+    Route::get('/edit', [EventController::class, 'edit'])->name('edit');
+    Route::get('/create', [EventController::class, 'create'])->name('create');
+    Route::post('/create', [EventController::class, 'store'])->name('store');});
 
 // ====================== PROTECTED (USER) ======================
 Route::middleware('auth')->group(function () {
@@ -89,7 +89,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 });
 
 //====================== Reservation ==========================
-Route::prefix('reservations')->name('reservations.')->group(function () {
+Route::prefix('events/{event}/reservations')->name('reservations.')->group(function () {
     Route::get('/', [ReservationController::class, 'index'])->name('index');
     Route::post('/', [ReservationController::class, 'store'])->name('store');
 
