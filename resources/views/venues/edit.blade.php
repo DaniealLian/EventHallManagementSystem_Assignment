@@ -14,7 +14,7 @@
   @endif
 
   <div class="card">
-    <form action="{{ route('venues.update', $venue->code) }}" method="POST">
+    <form action="{{ route('venues.update', $venue->id) }}" method="POST">
       @csrf
       @method('PUT')
 

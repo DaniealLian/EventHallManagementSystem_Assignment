@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Venue extends Model
 {
-    protected $primaryKey = 'code';
+    protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = [
-        'code',
+        'id',
         'name',
         'address',
         'capacity',
@@ -20,6 +20,6 @@ class Venue extends Model
 
     public function getRouteKeyName()
     {
-        return 'code';
+        return 'id';
     }
 }

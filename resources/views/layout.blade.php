@@ -108,13 +108,6 @@
     }
 
   </style>
-</head>
-<body>
-  <header>
-    <nav>
-      <a href="{{ route('venues.index') }}">Venues</a>
-    </nav>
-  </header>
 
   <main>
     @yield('content')

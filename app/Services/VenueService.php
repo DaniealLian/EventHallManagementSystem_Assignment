@@ -10,28 +10,25 @@ class VenueService
 {
     public function getAllVenues()
     {
-        return Venue::orderBy('code')->get();
+        return Venue::orderBy('id')->get();
     }
 
-    public function getVenueByCode(string $code): ?Venue
+    public function getVenueByCode(string $id): ?Venue
     {
-        return Venue::where('code', $code)->first();
+        return Venue::where('id', $id)->first();
     }
 
     public function createVenue(array $data): Venue
     {
         return DB::transaction(function () use ($data) {
-            $last = Venue::selectRaw("CAST(SUBSTRING(code, 2) AS UNSIGNED) as n")
+            $last = Venue::selectRaw("CAST(SUBSTRING(id, 2) AS UNSIGNED) as n")
                          ->orderByDesc('n')
                          ->first();
-
-            $n = $last ? ($last->n + 1) : 1;
-            $data['code'] = 'V' . str_pad($n, 3, '0', STR_PAD_LEFT);
 
             $venue = Venue::create($data);
 
             Log::info('Venue created', [
-                'code' => $venue->code,
+                'id' => $venue->id,
                 'user' => optional(auth()->user())->id,
             ]);
             
@@ -39,23 +36,23 @@ class VenueService
         });
     }
 
-    public function updateVenue(string $code, array $data): ?Venue
+    public function updateVenue(string $id, array $data): ?Venue
     {
-        $venue = $this->getVenueByCode($code);
+        $venue = $this->getVenueByCode($id);
         if (! $venue) {
             return null;
         }
 
         $venue->update($data);
 
-        Log::info('Venue updated', ['code' => $venue->code, 'user' => optional(auth()->user())->id]);
+        Log::info('Venue updated', ['id' => $venue->id, 'user' => optional(auth()->user())->id]);
 
         return $venue;
     }
 
-    public function deleteVenue(string $code): bool
+    public function deleteVenue(string $id): bool
     {
-        $venue = $this->getVenueByCode($code);
+        $venue = $this->getVenueByCode($id);
         if (! $venue) {
             return false;
         }
@@ -63,7 +60,7 @@ class VenueService
         $ok = $venue->delete();
 
         if ($ok) {
-            Log::info('Venue deleted', ['code' => $code, 'user' => optional(auth()->user())->id]);
+            Log::info('Venue deleted', ['id' => $id, 'user' => optional(auth()->user())->id]);
         }
 
         return $ok;

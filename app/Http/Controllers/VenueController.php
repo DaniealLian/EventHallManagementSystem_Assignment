@@ -24,31 +24,31 @@ class VenueController extends Controller
             'name'        => 'required|string|max:100',
             'address'     => 'required|string',
             'capacity'    => 'required|integer|min:1|max:1000',
-            'postal_code' => 'required|string|max:10',
+            'postal_code' => 'required|stringm|min:5|max:5',
         ]);
 
         $venue = VFacade::createVenue($data);
 
-        return redirect()->route('venues.index')->with('success', 'Venue created: ' . ($venue->code ?? ''));
+        return redirect()->route('venues.index')->with('success', 'Venue created: ' . ($venue->id ?? ''));
     }
 
-    public function edit($code)
+    public function edit($id)
     {
-        $venue = VFacade::getVenueByCode($code);
+        $venue = VFacade::getVenueByCode($id);
         if (!$venue) abort(404);
         return view('venues.edit', compact('venue'));
     }
 
-    public function update(Request $request, $code)
+    public function update(Request $request, $id)
     {
         $data = $request->validate([
             'name'        => 'required|string|max:100',
             'address'     => 'required|string',
             'capacity'    => 'required|integer|min:1|max:1000',
-            'postal_code' => 'required|string|max:10',
+            'postal_code' => 'required|string|min:5|max:5',
         ]);
 
-        $updated = VFacade::updateVenue($code, $data);
+        $updated = VFacade::updateVenue($id, $data);
 
         if (! $updated) {
             return back()->withErrors(['err' => 'Venue not found.']);
@@ -57,9 +57,9 @@ class VenueController extends Controller
         return redirect()->route('venues.index')->with('success', 'Venue updated.');
     }
 
-    public function destroy($code)
+    public function destroy($id)
     {
-        $ok = VFacade::deleteVenue($code);
+        $ok = VFacade::deleteVenue($id);
         $msg = $ok ? 'Venue deleted.' : 'Venue not found.';
         return redirect()->route('venues.index')->with('success', $msg);
     }

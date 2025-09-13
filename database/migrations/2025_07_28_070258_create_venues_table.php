@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('venues', function (Blueprint $table) {
             //code is unique key to allow 1 only
-            $table->string('code', 8)->unique();
+            $table->id();
             $table->string('name', 100);
             $table->text('address');
             $table->unsignedInteger('capacity');

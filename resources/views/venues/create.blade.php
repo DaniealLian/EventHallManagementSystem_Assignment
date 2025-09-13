@@ -19,7 +19,7 @@
 
   <div class="card">
     <form action="{{ isset($venue)
-                    ? route('venues.update', $venue->code)
+                    ? route('venues.update', $venue->id)
                     : route('venues.store') }}"
           method="POST">
       @csrf

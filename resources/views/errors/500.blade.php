@@ -8,8 +8,8 @@
       Be a good boy and go back by clicking the button below <br><br>
       V<br>V<br>V
     </p>
-    <a href="{{ route('venues.index') }}" class="button" style="background:#80cbc4;">
-      ← Back to Venues
+    <a href="{{ route('dashboard') }}" class="button" style="background:#80cbc4;">
+      ← Back to Dashboard
     </a>
   </div>
 @endsection
