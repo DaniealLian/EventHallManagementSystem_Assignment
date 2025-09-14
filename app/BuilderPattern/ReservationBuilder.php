@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\Reservation;
 use App\Models\ReservationItem;
 use App\Services\ReservationSessionService;
+use App\Models\PricingTier;
 
 
 class ReservationBuilder
@@ -30,7 +31,10 @@ class ReservationBuilder
             'total_price' => 0,
             'created_at' => now()->timestamp
         ];
+
+        $this->updateSession();
     }
+
 
     //Build reservation time
     public function addReservation(\DateTime $date): self
@@ -45,8 +49,22 @@ class ReservationBuilder
     {
         $pricing_tier = $this->event->pricingTiers()->findOrFail($pricingTierId);
 
+        $realAvailable = $this->sessionService->getRealAvailableQty($pricing_tier);
+
+        if ($qty > $realAvailable) {
+            throw new \Exception("Only {$realAvailable} tickets available for {$pricing_tier->tier}!");
+        }
+
+        if (isset($this->reservation_session['reservationItems'][$pricingTierId])) {
+            $oldQty = $this->reservation_session['reservationItems'][$pricingTierId]['quantity'];
+            $this->sessionService->releaseInventory($pricingTierId, $oldQty);
+        }
+
+        $this->sessionService->holdInventory($pricingTierId, $qty);
+
         $this->reservation_session['reservationItems'][$pricingTierId]= [
             'pricing_tier_id' => $pricing_tier->id,
+            'tier' => $pricing_tier->tier,
             'quantity' => $qty,
             'unit_price' => $pricing_tier->price, 
             'subtotal' => $qty * $pricing_tier->price
@@ -62,6 +80,11 @@ class ReservationBuilder
 
     public function removeItem(int $pricingTierId): self
     {
+        if (isset($this->reservation_session['reservationItems'][$pricingTierId])) {
+            $qty = $this->reservation_session['reservationItems'][$pricingTierId]['quantity'];
+            $this->sessionService->releaseInventory($pricingTierId, $qty);
+        }
+    
         unset($this->reservation_session['reservationItems'][$pricingTierId]);
         $this->totalPrice();
         $this->updateSession();
@@ -80,6 +103,7 @@ class ReservationBuilder
         return $this->reservation_session;
     }
 
+    
 
     //----------------------------
 
@@ -114,6 +138,15 @@ class ReservationBuilder
                     'quantity' => $item['quantity'],
                     'unit_price' => $item['unit_price'],
                 ]);
+
+                $updatedqty = PricingTier::where('id', $item['pricing_tier_id'])
+                                   ->where('available_qty', '>=', $item['quantity'])
+                                   ->decrement('available_qty', $item['quantity']);
+            
+                if ($updatedqty === 0) {
+                    throw new \Exception("Not enough tickets available for tier ID: {$item['pricing_tier_id']}");
+                }
+
             }
 
             
@@ -144,7 +177,7 @@ class ReservationBuilder
             ->sum('subtotal');
     }
    
-
+    //store session for user to reserve shit
     private function updateSession(): void
     {
         $this->sessionService->storeSession($this->sessionToken, $this->reservation_session);

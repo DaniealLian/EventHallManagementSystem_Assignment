@@ -42,6 +42,32 @@ class ReservationSessionService
         return $reservation;
     }
 
+    public function holdInventory(int $pricingTierId, int $quantity): void
+    {
+        $key = "inventory_hold:{$pricingTierId}";
+        Redis::incrby($key, $quantity);
+        Redis::expire($key, self::TIMEOUT_DURATION * 60);
+    }
+
+    public function getRealAvailableQty($tier): int
+    {
+        $heldTickets = Redis::get("inventory_hold:{$tier->id}") ?? 0;
+        return max(0, $tier->available_qty - $heldTickets);
+    }
+
+    public function releaseInventory(int $pricingTierId, int $quantity): void
+    {
+        $key = "inventory_hold:{$pricingTierId}";
+        Redis::decrby($key, $quantity);
+    }
+
+    // Check real availability
+    public function getAvailableQuantity(PricingTier $tier): int
+    {
+        $held = Redis::get("inventory_hold:{$tier->id}") ?? 0;
+        return max(0, $tier->available_qty - $held);
+}
+
      public function extendSession(string $token): bool
     {
         $key = self::REDIS_PREFIX . $token;

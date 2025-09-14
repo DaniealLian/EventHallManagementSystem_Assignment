@@ -15,6 +15,7 @@ class Reservation extends Model
     //convert reservation Date value into php type when accessing it
     protected $casts =[
         'reserved_date_time' => 'datetime',
+        'total_price' => 'decimal:2'
     ];
     //this reservation has many reservationItem
     public function reservationItems(): HasMany

@@ -95,14 +95,20 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 //====================== Reservation ==========================
 Route::prefix('reservations')->name('reservations.')->group(function () {
+    // show list of events (your ReservationController@index)
     Route::get('/index', [ReservationController::class, 'index'])->name('index');
-    Route::get('/create/{event}', [ReservationController::class, 'create'])->name('create');
-    Route::post('/create', [ReservationController::class, 'store'])->name('store');
 
-    // Session token with finalize page
-    Route::get('/finalize/{token}', [ReservationController::class, 'finalize'])->name('finalize');
-    // Confirm and save the reservation permanently
-    Route::post('/confirm/{token}', [ReservationController::class, 'confirmReservation'])->name('confirm');
+    // show reservation form for an event
+    Route::get('/create/{event}', [ReservationController::class, 'create'])->name('create');
+
+    // store provisional reservation in Redis
+    Route::post('/store/{event}', [ReservationController::class, 'store'])->name('store');
+
+    // finalize "checkout" page
+    Route::get('/finalize/{event}/{token}', [ReservationController::class, 'finalize'])->name('finalize');
+
+    // confirm reservation and save to DB
+    Route::post('/confirm/{event}/{token}', [ReservationController::class, 'confirmReservation'])->name('confirm');
 });
 
 

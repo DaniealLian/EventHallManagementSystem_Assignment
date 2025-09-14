@@ -10,6 +10,10 @@ class ReservationItem extends Model
     //
     protected $fillable =['reservation_id', 'pricing_tier_id', 'quantity', 'unit_price'];
 
+    protected $casts =[
+        'unit_price' => 'decimal:2'
+    ];
+
     public function reservation() :BelongsTo
     {
         return $this->belongsTo(Reservation::class);

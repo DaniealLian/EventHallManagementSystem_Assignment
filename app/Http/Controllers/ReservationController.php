@@ -31,6 +31,10 @@ class ReservationController extends Controller
     public function create(Event $event)
     {
         $event->load('pricingTiers');
+
+        foreach ($event->pricingTiers as $tier) {
+        $tier->real_available_qty = $this->sessionService->getRealAvailableQty($tier);
+        }
         return view('reservations.create', compact('event'));
     }
 
@@ -80,9 +84,10 @@ class ReservationController extends Controller
 
          if (!$builder) {
             return redirect()
-                ->route('reservations.index', $event)
+                ->route('reservations.index')
                 ->with('error', 'Reservation session expired. Please start over.');
         }
+        $this->sessionService->extendSession($token);
 
         $reservation_session = $builder->getReservationData();
         $sessionData = $this->sessionService->getSession($token);
@@ -104,7 +109,7 @@ class ReservationController extends Controller
             $reservation = $builder->save(); 
             
             return redirect()
-                ->route('events.index')
+                ->route('reservations.index')
                 ->with('success', 'Reservation confirmed successfully!');
                 
         } catch (\Exception $e) {

@@ -5,7 +5,7 @@
 </head>
 <body>
     <h1>Available Events</h1>
-
+@extends('layouts.app')
     @foreach($events as $event)
         <div>
             <h3>{{ $event->title }}</h3>
