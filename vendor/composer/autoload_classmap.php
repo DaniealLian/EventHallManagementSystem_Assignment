@@ -15,6 +15,8 @@ return array(
     'App\\Factories\\AdminFactory' => $baseDir . '/app/Factories/AdminFactory.php',
     'App\\Factories\\UserFactory' => $baseDir . '/app/Factories/UserFactory.php',
     'App\\Http\\Controllers\\AdminController' => $baseDir . '/app/Http/Controllers/AdminController.php',
+    'App\\Http\\Controllers\\Api\\EventApiController' => $baseDir . '/app/Http/Controllers/Api/EventApiController.php',
+    'App\\Http\\Controllers\\Api\\UserRegistrationController' => $baseDir . '/app/Http/Controllers/Api/UserRegistrationController.php',
     'App\\Http\\Controllers\\AuthController' => $baseDir . '/app/Http/Controllers/AuthController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\EventController' => $baseDir . '/app/Http/Controllers/EventController.php',

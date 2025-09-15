@@ -553,6 +553,8 @@ class ComposerStaticInitc514d8f7b9fc5970bdd94287905ef584
         'App\\Factories\\AdminFactory' => __DIR__ . '/../..' . '/app/Factories/AdminFactory.php',
         'App\\Factories\\UserFactory' => __DIR__ . '/../..' . '/app/Factories/UserFactory.php',
         'App\\Http\\Controllers\\AdminController' => __DIR__ . '/../..' . '/app/Http/Controllers/AdminController.php',
+        'App\\Http\\Controllers\\Api\\EventApiController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/EventApiController.php',
+        'App\\Http\\Controllers\\Api\\UserRegistrationController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/UserRegistrationController.php',
         'App\\Http\\Controllers\\AuthController' => __DIR__ . '/../..' . '/app/Http/Controllers/AuthController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\EventController' => __DIR__ . '/../..' . '/app/Http/Controllers/EventController.php',
