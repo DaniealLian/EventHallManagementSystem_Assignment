@@ -69,16 +69,12 @@ class EventController extends Controller
             ]);
 
             if (Auth::guard('admin')->check()) {
-                $validated['user_id'] = 1; // Or handle admin-created events differently
+                $validated['user_id'] = 1; // or handle admin created events differently
             } else {
                 $validated['user_id'] = auth()->id();
             }
 
-
-
-
-
-            // The SecureProxyEventService will handle setting user_id and encryption
+            // handle setting user_id and encryption
             $this->eventService->createEvent($validated);
 
             return redirect()->route('events.index')->with('success', 'Event created successfully!');
@@ -124,7 +120,7 @@ class EventController extends Controller
                 'pricing_tiers.*.description' => 'nullable|string'
             ]);
 
-            // The SecureProxyEventService will handle authorization and encryption
+            // handle authorization and encryption
             $this->eventService->updateEvent($event, $validated);
 
             return redirect()->route('events.index')->with('success', 'Event updated successfully!');
