@@ -44,6 +44,11 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {{-- Show tiers validation error above the table --}}
+                    @error('tiers')
+                        <div class="alert alert-danger mb-3">{{ $message }}</div>
+                    @enderror
+
                     @foreach($event->pricingTiers as $tier)
                         <tr>
                             <td><strong>{{ $tier->tier }}</strong></td>

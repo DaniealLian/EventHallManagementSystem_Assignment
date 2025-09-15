@@ -46,8 +46,29 @@ class ReservationController extends Controller
     {
 
         $request->validate([
-        'reserved_date_time' => 'required|date|after:now',
-        'tiers' => 'required|array',
+        'reserved_date_time' => ['required','date', 
+            function ($attribute, $value, $fail) use ($event) {
+                    $reserved = \Carbon\Carbon::parse($value);
+                    if ($reserved->lt($event->start_time) || $reserved->gt($event->end_time)) {
+                        $fail("The reservation date must be within the event duration ({$event->start_date} to {$event->end_date}).");
+                    }
+                }],
+        'tiers' => ['required','array',
+            function ($attribute, $value, $fail) {
+                // Check if at least one tier has quantity >= 1
+                $hasValidQuantity = false;
+                foreach ($value as $tierId => $quantity) {
+                    if (is_numeric($quantity) && $quantity >= 1) {
+                        $hasValidQuantity = true;
+                        break;
+                    }
+                }
+                
+                if (!$hasValidQuantity) {
+                    $fail('Please select at least one ticket.');
+                }
+            }
+        ],
         'tiers.*' => 'integer|min:0',
         ]);
         
