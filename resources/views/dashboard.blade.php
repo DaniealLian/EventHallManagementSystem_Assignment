@@ -54,7 +54,7 @@
                             <a class="btn btn-success btn-lg" href="{{ route('events.index') }}"> Manage Events</a>
                     </div>
                     <div class="col-md-2">
-                            <a class="btn btn-success btn-lg" href="{{ route('venues.index') }}">Create Venue</a>
+                            <a class="btn btn-success btn-lg" href="{{ route('venues.index') }}">Manage Venue</a>
                     </div>
                 </div>
             </div>
