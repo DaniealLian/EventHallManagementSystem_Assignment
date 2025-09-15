@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo; 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 
 
@@ -14,7 +14,15 @@ class Payment extends Model
         'method',
         'amount',
         'status',
-        'transaction_id'
+        'transaction_id',
+        'gateway',                    // Added
+        'gateway_transaction_id',     // Added
+        'ip_address',                 // Added
+        'user_agent',                 // Added
+    ];
+
+    protected $casts = [
+        'amount' => 'decimal:2',
     ];
 
     public function reservation()
@@ -22,5 +30,5 @@ class Payment extends Model
         return $this->belongsTo(Reservation::class);
     }
 
-    
+
 }

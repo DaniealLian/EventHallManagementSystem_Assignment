@@ -4,7 +4,7 @@ namespace App\Strategies;
 
 use App\Models\Reservation;
 
-class OnlineBankingPayment
+class OnlineBankingPayment implements PaymentStrategy
 {
     public function pay(Reservation $reservation, float $amount): string
     {

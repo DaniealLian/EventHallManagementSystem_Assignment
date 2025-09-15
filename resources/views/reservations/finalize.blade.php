@@ -48,7 +48,7 @@
     {{-- Timer Info --}}
     @if(isset($sessionData['time_remaining']))
         <div class="alert alert-warning mt-3">
-            ⚠️ You have <strong>{{ $sessionData['time_remaining'] }}</strong> seconds left to confirm 
+            ⚠️ You have <strong>{{ $sessionData['time_remaining'] }}</strong> seconds left to confirm
             this reservation before it expires.
         </div>
     @endif

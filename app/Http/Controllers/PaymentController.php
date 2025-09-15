@@ -20,11 +20,10 @@ class PaymentController extends Controller
 
     public function process(Request $request)
     {
-        // ✅ 1. Validate input
+        // ✅ 1. Validate input - Updated validation rules to match form values
         $validated = $request->validate([
             'reservation_id' => 'required|exists:reservations,id',
-            'amount' => 'required|numeric|min:1',
-            'method' => 'required|in:credit_card,debit_card,paypal',
+            'method' => 'required|in:card,online_banking,e_wallet', // Updated to match form options
         ]);
 
         // ✅ 2. Find reservation
@@ -34,28 +33,29 @@ class PaymentController extends Controller
             abort(403, 'Unauthorized to process payment for this reservation.');
         }
 
-        // ✅ 3. Pick strategy based on method
+        // Use reservation total_price as amount
+        $amount = $reservation->total_price;
+
+        // ✅ 3. Pick strategy based on method - Updated to match form values
         $strategy = match ($validated['method']) {
-            'credit_card' => new CardPayment(),
-            'debit_card'  => new CardPayment(), // you can differentiate later if needed
-            'paypal'      => new EWalletPayment(),
+            'card' => new CardPayment(),
             'online_banking' => new OnlineBankingPayment(),
-            default       => throw new \Exception("Unsupported payment method"),
+            'e_wallet' => new EWalletPayment(),
+            default => throw new \Exception("Unsupported payment method"),
         };
 
         // ✅ 4. Process payment using Strategy Pattern
         $paymentContext = new PaymentContext($strategy);
-        $status = $paymentContext->pay($reservation, $validated['amount']); 
-        // status will be "success", "pending", or "failed"
+        $status = $paymentContext->pay($reservation, $amount);
 
         // ✅ 5. Save record
         $payment = Payment::create([
             'reservation_id' => $reservation->id,
-            'amount' => $validated['amount'],
+            'amount' => $amount,
             'method' => $validated['method'],
             'status' => $status,
             'gateway' => $this->getGatewayName($validated['method']),
-            'gateway_transaction_id' => uniqid("txn_"), // just a sample transaction ID
+            'gateway_transaction_id' => uniqid("txn_"),
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
         ]);
@@ -63,7 +63,7 @@ class PaymentController extends Controller
         // ✅ 6. Handle status and redirect with proper messages
         return match ($status) {
             'success' => redirect()->route('payments.status')
-                                   ->with('success', 'Payment completed successfully! Transaction ID: ' . $payment->transaction_id),
+                                   ->with('success', 'Payment completed successfully! Transaction ID: ' . $payment->gateway_transaction_id),
 
             'pending' => redirect()->route('payments.status')
                                    ->with('info', 'Payment is pending confirmation. Please check later.'),
@@ -76,11 +76,16 @@ class PaymentController extends Controller
         };
     }
 
+    public function status()
+    {
+        return view('payments.status');
+    }
+
     private function getGatewayName(string $method): string
     {
         return match ($method) {
-            'credit_card', 'debit_card' => 'stripe', // or whatever you're using
-            'paypal' => 'paypal',
+            'card' => 'stripe',
+            'e_wallet' => 'paypal',
             'online_banking' => 'fpx',
             default => 'manual'
         };
