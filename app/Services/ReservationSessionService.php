@@ -13,7 +13,7 @@ use Carbon\Carbon;
 
 class ReservationSessionService
 {
-    const TIMEOUT_DURATION = 1;
+    const TIMEOUT_DURATION = 1; //will change dont worry
     const REDIS_PREFIX = 'temp_reservation:';
 
     public function generateToken(): string
@@ -84,5 +84,13 @@ class ReservationSessionService
     {
         $key = self::REDIS_PREFIX . $token;
         return Redis::exists($key);
+    }
+
+    public function cancelledSlots(Reservation $reservation)
+    {
+        foreach ($reservation->reservationItems as $item) {
+            //  restore back the available_qty to the pricing tier
+            $item->pricingTier->increment('available_qty', $item->quantity);
+        }
     }
 }

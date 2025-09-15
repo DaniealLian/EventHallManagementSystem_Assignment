@@ -49,6 +49,10 @@ Route::middleware('auth')->group(function () {
         Route::get('checkout/{reservation}', [PaymentController::class, 'checkout'])->name('checkout');
         Route::post('/process', [PaymentController::class, 'process'])->name('process');
         Route::get('/status', [PaymentController::class, 'status'])->name('status');
+        Route::delete('/{reservation}/cancel', [PaymentController::class, 'cancelPayment'])
+            ->name('cancel')
+            ->middleware('auth');
+
     });
 
     // ====================== EVENTS ======================

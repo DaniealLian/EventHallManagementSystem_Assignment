@@ -9,9 +9,41 @@ use App\Strategies\PaymentContext;
 use App\Strategies\CardPayment;
 use App\Strategies\OnlineBankingPayment;
 use App\Strategies\EWalletPayment;
+use App\Services\ReservationSessionService;
 
 class PaymentController extends Controller
 {
+
+    //----------------For deleting reservation data--
+    protected $sessionService;  
+
+    public function __construct(ReservationSessionService $sessionService)
+    {
+        $this->sessionService = $sessionService;  
+    }
+
+     public function cancelPayment(Reservation $reservation)
+    {
+        try {
+           
+                $this->sessionService->cancelledSlots($reservation);
+                
+                $reservation->delete();
+            
+                return redirect()
+                    ->route('reservations.index')
+                    ->with('success', 'Payment cancelled and tickets released back to inventory.');
+                
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Failed to cancel reservation: ' . $e->getMessage());
+        }
+    }
+    //-----------------------------------------------
+
+
+
     public function checkout(Reservation $reservation){
         $reservation->load(['event', 'reservationItems.pricingTier']);
 
@@ -90,4 +122,6 @@ class PaymentController extends Controller
             default => 'manual'
         };
     }
+
+   
 }

@@ -21,5 +21,17 @@
 
         <button type="submit" class="btn btn-success">Pay Now</button>
     </form>
+
+    <div class="mt-4 pt-3 border-top">
+    <p class="text-muted">Cancel Payment</p>
+    <form action="{{ route('payments.cancel', $reservation) }}" method="POST" style="display: inline;">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-outline-danger" 
+                onclick="return confirm('Are you sure you want to cancel this transaction?\n')">
+            <i class="fas fa-times-circle"></i> Cancel Reservation
+        </button>
+    </form>
+</div>
 </div>
 @endsection
