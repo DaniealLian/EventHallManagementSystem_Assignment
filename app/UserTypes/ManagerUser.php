@@ -19,10 +19,12 @@ class ManagerUser implements UserTypeInterface
             'view_halls',
             'make_bookings',
             'view_own_bookings',
-            'manage_halls',
-            'create_halls',
-            'edit_halls',
-            'view_all_bookings'
+            'manage_venue',
+            'view_all_bookings',
+            'view_events',
+            'create_events',
+            'edit_events',
+            'manage_events'
         ];
     }
 
@@ -52,7 +54,7 @@ class ManagerUser implements UserTypeInterface
     public function createDatabaseRecord(array $data): User
     {
         $userData = array_merge($data, $this->getDefaultAttributes());
-        
+
         return User::create([
             'name' => $userData['name'],
             'email' => $userData['email'],

@@ -51,20 +51,26 @@ Route::middleware('auth')->group(function () {
         Route::get('/status', [PaymentController::class, 'status'])->name('status');
 
     });
-       
+
     // ====================== EVENTS ======================
     Route::prefix('events')->name('events.')->group(function () {
         Route::get('/index', [EventController::class, 'index'])->name('index');
+        Route::get('/show/{event}', [EventController::class, 'show'])->name('show');
+
+        Route::middleware('permission:create_events')->group(function () {
         Route::get('/create', [EventController::class, 'create'])->name('create');
         Route::post('/create', [EventController::class, 'store'])->name('store');
-        Route::get('/show/{event}', [EventController::class, 'show'])->name('show');
+        });
+
+        Route::middleware('permission:edit_events')->group(function () {
         Route::get('/edit/{event}', [EventController::class, 'edit'])->name('edit');
         Route::put('/edit/{event}', [EventController::class, 'update'])->name('update');
+        });
     });
 
     //======================= RESERVATIONS =========================
     Route::prefix('reservations')->name('reservations.')->group(function () {
-        // show list of events 
+        // show list of events
         Route::get('/create/{event}', [ReservationController::class, 'create'])->name('create');
         // redis session store reservation
         Route::post('/store/{event}', [ReservationController::class, 'store'])->name('store');
@@ -74,7 +80,9 @@ Route::middleware('auth')->group(function () {
     });
 
     // Venues
+    Route::middleware('permission:manage_venue')->group(function () {
     Route::resource('venues', VenueController::class);
+    });
 });
 
 // ====================== ADMIN ======================
