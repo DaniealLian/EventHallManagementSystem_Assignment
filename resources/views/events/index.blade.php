@@ -62,7 +62,7 @@
                 </td>
             </tr>
         @empty
-            <td colspan="{{ (auth()->user()->hasRole('manager') || auth()->guard('admin')->check()) ? '8' : '7' }}" class="text-center">
+            <td colspan="{{ (auth()->user()->isManager('manager') || auth()->guard('admin')->check()) ? '8' : '7' }}" class="text-center">
                     No events found
                 </td>
             @endforelse
