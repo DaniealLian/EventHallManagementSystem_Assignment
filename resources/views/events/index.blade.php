@@ -54,15 +54,7 @@
                 </td>
                 <td>
                     @if(auth()->user()->isManager('manager') || auth()->guard('admin')->check())
-                        @can('update', $event)
-                            <a href="{{ route('events.edit', $event) }}" class="btn btn-sm btn-warning">Edit</a>
-                        @endcan
-                        @can('delete', $event)
-                            <form action="{{ route('events.destroy', $event) }}" method="POST" style="display:inline;">
-                                @csrf @method('DELETE')
-                                <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this event?')">Delete</button>
-                            </form>
-                        @endcan
+                        <a href="{{ route('events.edit', $event) }}" class="btn btn-sm btn-warning">Edit</a>
                         <a href="#" class="btn btn-sm btn-success">Book Event</a>
                     @else
                         <a href="#" class="btn btn-sm btn-success">Book Event</a>

@@ -12,6 +12,12 @@ use App\Strategies\EWalletPayment;
 
 class PaymentController extends Controller
 {
+    public function checkout(Reservation $reservation){
+        $reservation->load(['event', 'reservationItems.pricingTier']);
+
+        return view('payments.checkout', compact('reservation'));
+    }
+
     public function process(Request $request)
     {
         // ✅ 1. Validate input
@@ -24,11 +30,16 @@ class PaymentController extends Controller
         // ✅ 2. Find reservation
         $reservation = Reservation::findOrFail($validated['reservation_id']);
 
+        if ($reservation->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized to process payment for this reservation.');
+        }
+
         // ✅ 3. Pick strategy based on method
         $strategy = match ($validated['method']) {
             'credit_card' => new CardPayment(),
             'debit_card'  => new CardPayment(), // you can differentiate later if needed
             'paypal'      => new EWalletPayment(),
+            'online_banking' => new OnlineBankingPayment(),
             default       => throw new \Exception("Unsupported payment method"),
         };
 
@@ -43,7 +54,10 @@ class PaymentController extends Controller
             'amount' => $validated['amount'],
             'method' => $validated['method'],
             'status' => $status,
-            'transaction_id' => uniqid("txn_"), // just a sample transaction ID
+            'gateway' => $this->getGatewayName($validated['method']),
+            'gateway_transaction_id' => uniqid("txn_"), // just a sample transaction ID
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
         ]);
 
         // ✅ 6. Handle status and redirect with proper messages
@@ -59,6 +73,16 @@ class PaymentController extends Controller
 
             default   => redirect()->route('payments.status')
                                    ->with('error', 'Unexpected payment status.')
+        };
+    }
+
+    private function getGatewayName(string $method): string
+    {
+        return match ($method) {
+            'credit_card', 'debit_card' => 'stripe', // or whatever you're using
+            'paypal' => 'paypal',
+            'online_banking' => 'fpx',
+            default => 'manual'
         };
     }
 }

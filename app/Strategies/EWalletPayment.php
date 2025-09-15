@@ -10,7 +10,7 @@ class EWalletPayment
     {
         // Simulated e-wallet payment
         if ($amount > 0) {
-            return 'Paid';
+            return 'success';
         }
 
         return 'Failed';

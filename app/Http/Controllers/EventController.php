@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\PricingTier;
+use App\Models\Venue;
 use App\Services\EventServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +27,7 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = Event::with('organizer', 'pricingTiers')->get();
+        $events = Event::with('organizer', 'pricingTiers', 'venue')->get();
 
         return view('events.index', compact('events'));
     }
@@ -34,14 +35,8 @@ class EventController extends Controller
 
     public function create(Request $request)
     {
-        $venueId = $request->get('venue_id');
-        $venue = null;
-
-        if($venueId){
-            $venue = \App\Facades\VFacade::getVenueByCode($venueId);
-        }
-
-        return view('events.create', compact('venue'));
+        $venues = Venue::orderBy('name')->get(); 
+        return view('events.create', compact('venues')); 
     }
 
     /**
@@ -49,7 +44,7 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        $event->load(['organizer']);
+        $event->load(['organizer', 'venue', 'pricingTiers']);
         return view('events.show', compact('event'));
     }
 
@@ -63,7 +58,8 @@ class EventController extends Controller
                 'start_time'   => 'required|date',
                 'end_time'     => 'required|date|after:start_time',
                 'secret_notes' => 'nullable|string|max:500',
-               // 'venue_id'     => 'required|exists:venues,id',
+
+                'venue_id'     => 'required|exists:venues,id',
 
                 'pricing_tiers' => 'required|array|min:1',
                 'pricing_tiers.*.tier' => 'required|string|max:100',
@@ -98,8 +94,9 @@ class EventController extends Controller
 
     public function edit(Event $event)
     {
-        $event->load(['pricingTiers']);
-        
+        $event->load(['pricingTiers', 'venue']);
+        $venueName = Venue::orderBy('name')->get();
+
         // Optional: Check authorization before showing edit form
         //$this->authorize('update', $event);
         
@@ -117,7 +114,8 @@ class EventController extends Controller
                 'start_time'   => 'required|date',
                 'end_time'     => 'required|date|after:start_time',
                 'secret_notes' => 'nullable|string|max:500',
-               // 'venue_id'     => 'required|exists:venues,id',
+
+                'venue_id'     => 'required|exists:venue,id',
 
                 'pricing_tiers' => 'required|array|min:1',
                 'pricing_tiers.*.tier' => 'required|string|max:100',
@@ -158,7 +156,7 @@ class EventController extends Controller
 
     public function publicIndex()
     {
-        $events = Event::with('organizer')->get();
+        $events = Event::with('organizer', 'venue')->get();
         return view('events.public_index', compact('events'));
     }
 }

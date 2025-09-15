@@ -18,14 +18,15 @@ class Event extends Model
         'start_time',
         'end_time',
         'user_id',
-        //'venue_id',
-
+        'venue_id',
+        
     ];
 
-    protected $casts = [
+     protected $casts = [
         'start_time' => 'datetime',
         'end_time' => 'datetime',
     ];
+
 
     public function organizer()
     {
@@ -41,10 +42,10 @@ class Event extends Model
         return $this->hasMany(PricingTier::class);
     }
 
-    // public function venue()
-    // {
-    //     return $this->belongsTo(Venue::class);
-    // }
+    public function venue()
+    {
+        return $this->belongsTo(Venue::class);
+    }
 }
 
 ?>

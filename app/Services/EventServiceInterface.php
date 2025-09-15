@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Event;
 use App\Models\PricingTier;
-
+use App\Models\Venue;
 
 interface EventServiceInterface
 {
@@ -14,5 +14,6 @@ interface EventServiceInterface
 
     //for adding new tiers for the events
     public function addPricingTiers(Event $event, array $tiers): void;
+    public function validateVenueCapacity(Venue $venue, array $pricingTiers): void;
 }
 ?>

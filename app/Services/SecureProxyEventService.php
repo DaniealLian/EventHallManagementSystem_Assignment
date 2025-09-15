@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Event;
+use App\Models\Venue;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -38,7 +39,8 @@ class SecureProxyEventService implements EventServiceInterface
 
             Log::info("Event created securely", [
                 'event_id' => $event->id,
-                'user_id' => $userId
+                'user_id' => $userId, 
+                'venue_id' => $event -> venue_id,
             ]);
 
             return $event;
@@ -88,7 +90,8 @@ class SecureProxyEventService implements EventServiceInterface
 
             Log::info("Event updated securely", [
                 'event_id' => $event->id,
-                'user_id' => $userId
+                'user_id' => $userId,
+                'venue_id' => $updatedEvent ->venue_id
             ]);
 
             return $updatedEvent;
@@ -142,5 +145,10 @@ class SecureProxyEventService implements EventServiceInterface
     public function addPricingTiers(Event $event, array $tiers): void
     {
         $this->eventService->addPricingTiers($event, $tiers);
+    }
+
+    public function validateVenueCapacity(Venue $venue, array $pricingTiers): void
+    {
+        $this->eventService->validateVenueCapacity($venue, $pricingTiers);
     }
 }

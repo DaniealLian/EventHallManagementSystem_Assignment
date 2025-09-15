@@ -120,15 +120,16 @@
         @error('secret_notes') <span class="text-danger">{{ $message }}</span> @enderror
     </div>
 
-    <!-- <div class="mb-3">
+    <div class="mb-3">
     <label class="form-label">Venue</label>
         <div class="d-flex">
             <select name="venue_id" class="form-control me-2" required>
                 <option value="">-- Select Venue --</option>
-                @foreach(\App\Facades\VFacade::getAllVenues() as $v)
+                 @foreach($venues as $v)
                     <option value="{{ $v->id }}" 
-                        {{ request('venue_id') == $v->id ? 'selected' : '' }}>
-                        {{ $v->name }} - {{ $v->address }}
+                        data-capacity="{{ $v->capacity }}"
+                        {{ old('venue_id', request('venue_id')) == $v->id ? 'selected' : '' }}>
+                        {{ $v->name }} - {{ $v->address }} (Capacity: {{ $v->capacity }})
                     </option>
                 @endforeach
             </select>
@@ -136,7 +137,7 @@
                 ➕ Add Venue
             </a>
         </div>
-    </div> -->
+    </div>
 
 
     <div class="d-flex gap-2">

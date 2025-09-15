@@ -43,10 +43,15 @@ Route::middleware('auth')->group(function () {
 
 
     // ====================== PAYMENTS ======================
-    Route::get('/payments/checkout/{reservation}', [PaymentController::class, 'checkout'])->name('payments.checkout');
-    Route::post('/payments/process', [PaymentController::class, 'process'])->name('payments.process');
-    Route::get('/payments/status', [PaymentController::class, 'status'])->name('payments.status');
 
+    Route::prefix('payments')->name('payments.')->group(function ()
+    {
+        Route::get('checkout/{reservation}', [PaymentController::class, 'checkout'])->name('checkout');
+        Route::post('/process', [PaymentController::class, 'process'])->name('process');
+        Route::get('/status', [PaymentController::class, 'status'])->name('status');
+
+    });
+       
     // ====================== EVENTS ======================
     Route::prefix('events')->name('events.')->group(function () {
         Route::get('/index', [EventController::class, 'index'])->name('index');
@@ -55,7 +60,18 @@ Route::middleware('auth')->group(function () {
         Route::get('/show/{event}', [EventController::class, 'show'])->name('show');
         Route::get('/edit/{event}', [EventController::class, 'edit'])->name('edit');
         Route::put('/edit/{event}', [EventController::class, 'update'])->name('update');
-});
+    });
+
+    //======================= RESERVATIONS =========================
+    Route::prefix('reservations')->name('reservations.')->group(function () {
+        // show list of events 
+        Route::get('/create/{event}', [ReservationController::class, 'create'])->name('create');
+        // redis session store reservation
+        Route::post('/store/{event}', [ReservationController::class, 'store'])->name('store');
+        // finalize i.e. "checkout" page
+        Route::get('/finalize/{event}/{token}', [ReservationController::class, 'finalize'])->name('finalize');
+        Route::post('/confirm/{event}/{token}', [ReservationController::class, 'confirmReservation'])->name('confirm');
+    });
 
     // Venues
     Route::resource('venues', VenueController::class);
@@ -93,22 +109,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 });
 
-//====================== Reservation ==========================
+//====================== Reservation routes that doesnt need user login ==========================
 Route::prefix('reservations')->name('reservations.')->group(function () {
-    // show list of events (your ReservationController@index)
+    // show list of events even if user didnt login
     Route::get('/index', [ReservationController::class, 'index'])->name('index');
 
-    // show reservation form for an event
-    Route::get('/create/{event}', [ReservationController::class, 'create'])->name('create');
-
-    // store provisional reservation in Redis
-    Route::post('/store/{event}', [ReservationController::class, 'store'])->name('store');
-
-    // finalize "checkout" page
-    Route::get('/finalize/{event}/{token}', [ReservationController::class, 'finalize'])->name('finalize');
-
-    // confirm reservation and save to DB
-    Route::post('/confirm/{event}/{token}', [ReservationController::class, 'confirmReservation'])->name('confirm');
 });
 
 

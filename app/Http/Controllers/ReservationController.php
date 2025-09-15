@@ -17,6 +17,7 @@ class ReservationController extends Controller
     public function __construct(ReservationSessionService $sessionService)
     {
         $this->sessionService = $sessionService;
+        $this->middleware('auth')->except(['index', 'show']);
     }
 
     public function index()
@@ -109,7 +110,7 @@ class ReservationController extends Controller
             $reservation = $builder->save(); 
             
             return redirect()
-                ->route('reservations.index')
+                ->route('payments.checkout', ['reservation' => $reservation->id])
                 ->with('success', 'Reservation confirmed successfully!');
                 
         } catch (\Exception $e) {

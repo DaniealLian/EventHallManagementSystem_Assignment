@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Models\Event;
 use App\Models\PricingTier;
+use App\Models\Venue;
 
 class EventService implements EventServiceInterface
 {
@@ -12,7 +13,14 @@ class EventService implements EventServiceInterface
     {
         $pricingTiers = $data['pricing_tiers'] ?? [];
         unset($data['pricing_tiers']);
-        
+
+        if (isset($data['venue_id']) && !empty($pricingTiers)) {
+            $venue = Venue::findOrFail($data['venue_id']);
+            $this->validateVenueCapacity($venue, $pricingTiers);
+        }
+
+        unset($data['pricing_tiers']);
+
         // Create the event
         $event = Event::create($data);
         
@@ -27,6 +35,12 @@ class EventService implements EventServiceInterface
     public function updateEvent(Event $event, array $data): Event
     {
         $pricingTiers = $data['pricing_tiers'] ?? [];
+
+        if (isset($data['venue_id']) && !empty($pricingTiers)) {
+            $venue = Venue::findOrFail($data['venue_id']);
+            $this->validateVenueCapacity($venue, $pricingTiers);
+        }
+
         unset($data['pricing_tiers']);
         
         
@@ -56,6 +70,15 @@ class EventService implements EventServiceInterface
                 'available_qty' => $tier['available_qty'],
                 'description' => $tier['description'] ?? null,
             ]);
+        }
+    }
+
+    public function validateVenueCapacity(Venue $venue, array $pricingTiers): void
+    {
+        $totalTickets = collect($pricingTiers)->sum('available_qty');
+        
+        if ($totalTickets > $venue->capacity) {
+            throw new \Exception("Total tickets ({$totalTickets}) exceed venue capacity ({$venue->capacity})");
         }
     }
 }

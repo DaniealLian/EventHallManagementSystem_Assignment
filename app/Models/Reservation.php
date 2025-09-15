@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Reservation extends Model
 {
     //which stuff can be mass filled in the database for security
-    protected $fillable =['event_id', 'reserved_date_time', 'total_price'];
+    protected $fillable =['event_id', 'user_id', 'reserved_date_time', 'total_price'];
 
     //convert reservation Date value into php type when accessing it
     protected $casts =[
@@ -23,9 +23,19 @@ class Reservation extends Model
         return $this->hasMany(ReservationItem::class);
     }
 
-     public function event():BelongsTo
+    public function event():BelongsTo
     {
         return $this->belongsTo(Event::class);
+    }
+
+    public function customer():BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
     }
 
 }

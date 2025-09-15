@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <h2>Checkout for {{ $reservation->event->title }}</h2>
-    <p>Seats: {{ $reservation->quantity }}</p>
+    <p>Slots selected: {{ $reservation->reservationItems->sum('quantity') }}</p>
     <p>Total: RM {{ number_format($reservation->total_price, 2) }}</p>
 
     <form method="POST" action="{{ route('payments.process') }}">

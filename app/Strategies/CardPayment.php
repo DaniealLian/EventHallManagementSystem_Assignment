@@ -3,8 +3,9 @@
 namespace App\Strategies;
 
 use App\Models\Reservation;
+use App\Strategies\PaymentStrategy;
 
-class CardPayment
+class CardPayment implements PaymentStrategy
 {
     /**
      * Process card payment for a reservation
@@ -15,7 +16,7 @@ class CardPayment
         // Simulated example of card processing:
         if ($amount > 0) {
             // In real life, call a payment gateway API here (e.g., Stripe, PayPal)
-            return 'Paid'; 
+            return 'success'; 
         }
 
         return 'Failed';

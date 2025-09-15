@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('event_id')->constrained()->onDelete('cascade');
-            $table->decimal('total_price', 8, 2) -> default(0);
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->decimal('total_price', 10, 2) -> default(0);
             $table->dateTime('reserved_date_time');
             
             $table->timestamps();
@@ -25,7 +26,7 @@ return new class extends Migration
             $table->foreignId('event_id')->constrained()->onDelete('cascade');
             $table->string('tier');
             $table->decimal('price', 8, 2);
-            $table->integer('available_qty');
+            $table->unsignedInteger('available_qty');
             $table->text('description')->nullable();
 
             $table->timestamps();
@@ -35,8 +36,8 @@ return new class extends Migration
         Schema::create('reservation_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('reservation_id')->constrained()->onDelete('cascade');
-            $table->foreignId('pricing_tier_id')->constrained();
-            $table->integer('quantity');
+            $table->foreignId('pricing_tier_id')->constrained()->onDelete('cascade');
+            $table->unsignedInteger('quantity');
             $table->decimal('unit_price', 8, 2);
             
             

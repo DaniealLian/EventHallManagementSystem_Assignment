@@ -13,7 +13,7 @@ use App\Models\PricingTier;
 class ReservationBuilder
 {
     protected $event;
-    protected $user; // later integrate
+    protected $user; 
     protected $reservation_session;
     protected $sessionToken;
     protected $sessionService;
@@ -125,6 +125,7 @@ class ReservationBuilder
         return DB::transaction(function () {
             $reservation = Reservation::create([
                 'event_id' => $this->reservation_session['event_id'],
+                'user_id' => $this->user->id ?? auth() ->id(),
                 'reserved_date_time' => $this->reservation_session['reserved_date_time'],
                 'total_price' => $this->reservation_session['total_price'],
             
@@ -132,6 +133,16 @@ class ReservationBuilder
 
             
             foreach ($this->reservation_session['reservationItems'] as $item) {
+            
+                $pricingTier = PricingTier::where('id', $item['pricing_tier_id'])
+                    ->lockForUpdate() // Prevents race conditions
+                    ->first();
+                
+                if (!$pricingTier || $pricingTier->available_qty < $item['quantity']) {
+                    throw new \Exception("Not enough tickets available for tier: {$item['tier']}. Only {$pricingTier->available_qty} remaining.");
+                }
+
+                // Create reservation_item
                 ReservationItem::create([
                     'reservation_id' => $reservation->id,
                     'pricing_tier_id' => $item['pricing_tier_id'],
@@ -139,17 +150,15 @@ class ReservationBuilder
                     'unit_price' => $item['unit_price'],
                 ]);
 
-                $updatedqty = PricingTier::where('id', $item['pricing_tier_id'])
-                                   ->where('available_qty', '>=', $item['quantity'])
-                                   ->decrement('available_qty', $item['quantity']);
-            
-                if ($updatedqty === 0) {
-                    throw new \Exception("Not enough tickets available for tier ID: {$item['pricing_tier_id']}");
-                }
-
+                // Update inventory
+                $pricingTier->decrement('available_qty', $item['quantity']);
             }
 
-            
+        
+        foreach ($this->reservation_session['reservationItems'] as $item) {
+            $this->sessionService->releaseInventory($item['pricing_tier_id'], $item['quantity']);
+        }
+
             $this->sessionService->destroySession($this->sessionToken);
 
             return $reservation->fresh()->load('reservationItems.pricingTier');
