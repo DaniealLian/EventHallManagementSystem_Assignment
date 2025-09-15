@@ -241,7 +241,6 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Validate that end time is after start time
     const startTimeInput = document.querySelector('input[name="start_time"]');
     const endTimeInput = document.querySelector('input[name="end_time"]');
 
@@ -265,7 +264,6 @@ document.addEventListener('DOMContentLoaded', function() {
         endTimeInput.addEventListener('change', validateDates);
     }
 
-    // Form validation before submission
     document.getElementById('eventForm').addEventListener('submit', function(e) {
         const tiers = document.querySelectorAll('.tier-item');
         
@@ -275,7 +273,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
 
-        // Check for duplicate tier names
         const tierNames = [];
         let hasDuplicates = false;
         let hasEmptyNames = false;
@@ -305,7 +302,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
 
-        // Check if all required fields are filled
         let hasEmptyRequired = false;
         tiers.forEach(tier => {
             const requiredInputs = tier.querySelectorAll('input[required]');
@@ -328,7 +324,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return true;
     });
 
-    // Auto-hide alerts after 5 seconds
     setTimeout(function() {
         const alerts = document.querySelectorAll('.alert-dismissible');
         alerts.forEach(function(alert) {

@@ -47,8 +47,10 @@
                                             <td>
                                                 @if ($user->manager_status === 'pending')
                                                     <span class="badge bg-warning">Pending</span>
-                                                @else
+                                                @elseif($user->manager_status === 'approved')
                                                     <span class="badge bg-success">Approved</span>
+                                                @else
+                                                    <span class="badge bg-secondary">No application</span>
                                                 @endif
                                             </td>
 

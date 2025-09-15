@@ -27,7 +27,7 @@ class SecureProxyEventService implements EventServiceInterface
         try {
             $userId = Auth::id();
 
-            // Enforce ownership → organizer_id is always the current user
+            // user_id is always the current user
             $data['user_id'] = $userId;
 
             // Encrypt sensitive notes
@@ -67,7 +67,7 @@ class SecureProxyEventService implements EventServiceInterface
         try {
             $userId = Auth::id();
 
-            // Authorization check → only organizer or admin can update
+            // only organizer or admin can update
             if ($event->user_id !== $userId && !$this->isAdmin()) {
                 Log::warning("Unauthorized update attempt", [
                     'user_id' => $userId,
@@ -77,7 +77,7 @@ class SecureProxyEventService implements EventServiceInterface
                 throw new AuthorizationException("You are not authorized to update this event.");
             }
 
-            // Encrypt secret notes again if updating
+            // encrypt secret notes again if updated
             if (!empty($data['secret_notes'])) {
                 $data['secret_notes'] = Crypt::encryptString($data['secret_notes']);
             }
