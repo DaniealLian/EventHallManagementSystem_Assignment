@@ -9,5 +9,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\VenueController;
 use App\Http\Controllers\ReservationController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\UserRegistrationController;
 
 Route::apiResource('events', EventApiController::class);
+Route::post('/register', [UserRegistrationController::class, 'register']);
