@@ -57,7 +57,6 @@ class EventController extends Controller
                 'description'  => 'nullable|string|max:1000',
                 'start_time'   => 'required|date',
                 'end_time'     => 'required|date|after:start_time',
-                'secret_notes' => 'nullable|string|max:500',
 
                 'venue_id'     => 'required|exists:venues,id',
 

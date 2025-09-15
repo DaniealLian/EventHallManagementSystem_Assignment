@@ -31,7 +31,6 @@
             <th>End</th>
             <th>Organizer</th>
             <th>Venue</th>
-            <th>Secret Notes</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -47,10 +46,6 @@
                 <td>
                     {{ $event->venue->name ?? 'N/A' }}
                     <small class="text-muted">{{ $event->venue->address ?? '' }}</small>
-                </td>
-
-                <td>
-                    {{ $event->secret_notes ? Crypt::decryptString($event->secret_notes) : '' }}
                 </td>
                 <td>
                     @if(auth()->user()->isManager('manager') || auth()->guard('admin')->check())

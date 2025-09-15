@@ -115,12 +115,6 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Secret Notes (Optional)</label>
-        <textarea name="secret_notes" class="form-control" rows="2" placeholder="Internal notes for this event..."></textarea>
-        @error('secret_notes') <span class="text-danger">{{ $message }}</span> @enderror
-    </div>
-
-    <div class="mb-3">
     <label class="form-label">Venue</label>
         <div class="d-flex">
             <select name="venue_id" class="form-control me-2" required>

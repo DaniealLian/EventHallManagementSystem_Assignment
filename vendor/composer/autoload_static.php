@@ -568,8 +568,6 @@ class ComposerStaticInitc514d8f7b9fc5970bdd94287905ef584
         'App\\Models\\PricingTier' => __DIR__ . '/../..' . '/app/Models/PricingTier.php',
         'App\\Models\\Reservation' => __DIR__ . '/../..' . '/app/Models/Reservation.php',
         'App\\Models\\ReservationItem' => __DIR__ . '/../..' . '/app/Models/ReservationItem.php',
-        'App\\Models\\SeatType' => __DIR__ . '/../..' . '/app/Models/SeatType.php',
-        'App\\Models\\Transaction' => __DIR__ . '/../..' . '/app/Models/Transaction.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Models\\Venue' => __DIR__ . '/../..' . '/app/Models/Venue.php',
         'App\\Policies\\EventPolicy' => __DIR__ . '/../..' . '/app/Policies/EventPolicy.php',

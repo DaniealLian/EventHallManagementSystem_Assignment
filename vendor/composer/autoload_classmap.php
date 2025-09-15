@@ -35,8 +35,6 @@ return array(
     'App\\Models\\PricingTier' => $baseDir . '/app/Models/PricingTier.php',
     'App\\Models\\Reservation' => $baseDir . '/app/Models/Reservation.php',
     'App\\Models\\ReservationItem' => $baseDir . '/app/Models/ReservationItem.php',
-    'App\\Models\\SeatType' => $baseDir . '/app/Models/SeatType.php',
-    'App\\Models\\Transaction' => $baseDir . '/app/Models/Transaction.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Models\\Venue' => $baseDir . '/app/Models/Venue.php',
     'App\\Policies\\EventPolicy' => $baseDir . '/app/Policies/EventPolicy.php',
