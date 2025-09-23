@@ -90,7 +90,7 @@ class EventController extends Controller
     public function edit(Event $event)
     {
         $event->load(['pricingTiers', 'venue']);
-        $venueName = Venue::orderBy('name')->get();
+        $venues = Venue::orderBy('name')->get();
 
         // Optional: Check authorization before showing edit form
         //$this->authorize('update', $event);
@@ -110,7 +110,7 @@ class EventController extends Controller
                 'end_time'     => 'required|date|after:start_time',
                 'secret_notes' => 'nullable|string|max:500',
 
-                'venue_id'     => 'required|exists:venue,id',
+                //'venue_id'     => 'required|exists:venues,id',
 
                 'pricing_tiers' => 'required|array|min:1',
                 'pricing_tiers.*.tier' => 'required|string|max:100',
